@@ -16,4 +16,7 @@ mise install
 
 ```shell
 mise run //2025:01
+
+# see all available tasks with
+mise tasks ls --all
 ```

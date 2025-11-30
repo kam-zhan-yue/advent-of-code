@@ -2,8 +2,8 @@
 cmake = "4.2.0"
 
 [tasks.build]
-run = "echo 'build'"
+run = "cmake --build build"
 
 [tasks.default]
 depends = ["build"]
-run = "echo 'run'"
+run = "./build/program"
