@@ -13,5 +13,5 @@ depends = ["part-2:configure"]
 run = "cmake --build $BUILD_DIR"
 
 [tasks."part-2"]
-depends = ["part-2:build"]
+depends = ["part-1", "part-2:build"]
 run = "$BUILD_DIR/$PROJECT_NAME"

@@ -19,4 +19,7 @@ mise run //2025:01
 
 # see all available tasks with
 mise tasks ls --all
+
+# to run all problems in a specific year at once
+mise run //2024
 ```
