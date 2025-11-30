@@ -1,0 +1,9 @@
+[tools]
+cmake = "4.2.0"
+
+[tasks.build]
+run = "echo 'build'"
+
+[tasks.default]
+depends = ["build"]
+run = "echo 'run'"
