@@ -1,0 +1,41 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+  // Initialise data structures
+  vector<int> list_1 = {};
+  vector<int> list_2 = {};
+  map<int, int> count = {};
+
+  // Read the input file and allocate to list vectors
+  ifstream file("input.txt");
+  string str;
+  while(std::getline(file, str)) {
+    cout << str << endl;
+  }
+
+
+  // Loop through list_2 and generate a map of all occurences
+  for (int i=0; i<list_2.size(); ++i) {
+    int key = list_2[i];
+    if (count.count(key)) {
+      count[key] = count[key] + 1;
+    } else {
+      count[key] = 1;
+    }
+  }
+
+  int similarity = 0;
+  // Loop through list_1 and check similarity score
+  for (int i=0; i<list_1.size(); ++i) {
+    similarity += list_1[i] * count[list_1[i]];
+  }
+
+  cout << "Similarity Score is: " << similarity << endl;
+  return 0;
+}
