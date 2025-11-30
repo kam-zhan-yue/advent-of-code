@@ -2,3 +2,9 @@ experimental_monorepo_root = true
 
 [env]
 MISE_EXPERIMENTAL=1
+
+# For now define tools in the monorepo. As time passes and new versions come out, it will be necessary to move to subfolders
+[tools]
+python = "3.14.0"
+cmake = "4.2.0"
+
