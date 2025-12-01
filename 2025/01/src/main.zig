@@ -43,6 +43,7 @@ pub fn main() !void {
         }
         const over = @divFloor(dial, 100);
         if (over > 0) {
+            clicks += over;
         }
 
 
