@@ -1,9 +1,6 @@
 const std = @import("std");
 const _01 = @import("_01");
 
-// const ArrayList = std.ArrayList;
-// const test_allocator = std.testing.allocator;
-
 const print = std.debug.print;
 var gpa =  std.heap.GeneralPurposeAllocator(.{}){};
 const allocator = gpa.allocator();
@@ -11,7 +8,8 @@ const allocator = gpa.allocator();
 pub fn main() !void {
     // Init data structures
     var dial: i32 = 50;
-    var turns: u32 = 0;
+    var turns: i32 = 0;
+    var clicks: i32 = 0;
 
     // File Operations
     const file = try std.fs.cwd().openFile("input.txt", .{});
@@ -23,6 +21,8 @@ pub fn main() !void {
         const length: usize = line.len;
         const valueString: []const u8 = line[1..length];
         const value = try std.fmt.parseInt(i32, valueString, 10);
+
+        const started_at_zero = dial == 0;
 
         // Rotate the dial
         if (direction == 'L') {
@@ -36,6 +36,17 @@ pub fn main() !void {
             dial *= -1;
         }
 
+        // ======= CLICKS ======= //
+        // If negative, then it has clicked once
+        if ((!started_at_zero and negative) or dial == 0) {
+            clicks += 1;
+        }
+        const over = @divFloor(dial, 100);
+        if (over > 0) {
+        }
+
+
+        // ======= TURNS ======= //
         // Get the remainder
         const remainder = @mod(dial, 100);
         if (remainder == 0) {
@@ -48,19 +59,12 @@ pub fn main() !void {
         } else {
             dial = remainder;
         }
+        // Reset the dial
+        if (dial == 100) {
+            dial = 0;
+        }
     }
-    print("Turns to 0: {d}\n", .{turns});
-}
 
-test "test shitty filesystem library" {
-    const file = try std.fs.cwd().openFile("input.txt", .{});
-    defer file.close();
-
-    var file_buffer: [4096]u8 = undefined;
-    var reader = file.reader(&file_buffer);
-    var line_no: usize = 0;
-    while (try reader.interface.takeDelimiter('\n')) |line| {
-        line_no += 1;
-        print("{d}--{s}\n", .{line_no, line});
-    }
+    print("Part 1 | Turns to 0: {d}\n", .{turns});
+    print("Part 2 | Clicks to 0: {d}\n", .{clicks});
 }
