@@ -20,9 +20,9 @@ array<string_view, 2> split(string_view str, char delimiter) {
 
 int main() {
   // Initialise data structures
-  vector<int> list_1 = {};
-  vector<int> list_2 = {};
-  map<int, int> count = {};
+  vector<int> list_1;
+  vector<int> list_2;
+  map<int, int> count;
 
   // Read the input file and allocate to list vectors
   ifstream file("input.txt");

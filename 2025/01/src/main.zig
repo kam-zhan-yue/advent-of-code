@@ -1,8 +1,7 @@
 const std = @import("std");
-const _01 = @import("_01");
 
 const print = std.debug.print;
-var gpa =  std.heap.GeneralPurposeAllocator(.{}){};
+var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const allocator = gpa.allocator();
 
 pub fn main() !void {
@@ -45,7 +44,6 @@ pub fn main() !void {
         if (over > 0) {
             clicks += over;
         }
-
 
         // ======= TURNS ======= //
         // Get the remainder

@@ -1,0 +1,4 @@
+[tasks.default]
+run = '''
+mise run //2025/01
+'''

@@ -1,5 +1,2 @@
-[tasks.test]
-run = "zig build test"
-
 [tasks.default]
 run = "zig build run"
