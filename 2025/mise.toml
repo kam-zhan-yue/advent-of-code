@@ -2,3 +2,6 @@
 run = '''
 mise run //2025/01
 '''
+
+[tools]
+uv = "latest"
