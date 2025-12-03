@@ -1,4 +1,6 @@
-### Brainstorming
+## Brainstorming
+
+### Part One
 
 ```
 987654321111111
@@ -24,3 +26,26 @@ Case 2: `811111111111119`
 - Index 1-13: Current is 1, Highest Digit is 9 -> 9
 - Index 0: Current is 8, Highest Digit is 9 -> 89
 Hence, return 89
+
+### Part Two
+
+```
+987654321111111
+811111111111119
+234234234234278
+818181911112111
+```
+
+I think I can generalise my solution above in order to support an arbitrary number of digits (n < len(input)). We would build a list alongside our input that holds the current largest digits.
+
+Case 1: `817819` digits = 3
+- Index 5: Current is 9, Digits is [] -> [9]
+- Index 4: Current is 1, Digits is [9] -> [1, 9]
+- Index 3: Current is 8, Digits is [1, 9] -> [8, 1, 9]
+- Index 2: Current is 7, Digits is [8, 1, 9] -> Do nothing
+- Index 1: Current is 1, Digits is [8, 1, 9] -> Do nothing
+- Index 0: Current is 8, Digits is [8, 1, 9] -> [8, 8, 9]
+
+> We compare the current value to the minimum value of the list. If it is larger, we remove that value, then prepend it.
+
+
