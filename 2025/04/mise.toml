@@ -4,11 +4,18 @@ chmod +x ./part-one.sh
 chmod +x ./part-two.sh
 """
 
+
 [tasks.default]
 depends = ["configure"]
 run = """
-echo "Part One - Test"
-./part-one.sh < inputs/test.txt
-echo "Part One - Main"
+echo "Part One"
 ./part-one.sh < inputs/main.txt
+echo "Part Two"
+./part-two.sh < inputs/main.txt
 """
+
+[tasks.one]
+run = "./part-one.sh < inputs/main.txt"
+
+[tasks.two]
+run = "./part-two.sh < inputs/main.txt"
