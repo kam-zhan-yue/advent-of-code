@@ -1,0 +1,14 @@
+[tasks.configure]
+run = """
+chmod +x ./part-one.sh
+chmod +x ./part-two.sh
+"""
+
+[tasks.default]
+depends = ["configure"]
+run = """
+echo "Part One - Test"
+./part-one.sh < inputs/test.txt
+# echo "Part One - Main"
+# ./part-one.sh < inputs/main.txt
+"""

@@ -58,6 +58,6 @@ IO.puts("===Part One===")
 Solution.solve(test, 2)
 Solution.solve(main, 2)
 
-# IO.puts("===Part Two===")
+IO.puts("===Part Two===")
 Solution.solve(test, 12)
 Solution.solve(main, 12)
