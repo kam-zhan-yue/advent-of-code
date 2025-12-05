@@ -15,11 +15,11 @@ mise install
 3. Execute a task on a specific year/day with `mise run //{year}:{day}`
 
 ```shell
-mise run //2025:01
+mise run //2025/01
 
 # see all available tasks with
 mise tasks ls --all
 
-# to run all problems in a specific year at once
-mise run //2024
+# to run all problems in a specific year at once (if supported)
+mise run //2025
 ```

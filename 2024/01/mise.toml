@@ -1,4 +1,4 @@
-[env]
+env]
 PROJECT_NAME = "{{ config_root | basename }}"
 BUILD_DIR = "{{ config_root }}/build"
 

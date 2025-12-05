@@ -1,0 +1,14 @@
+[tasks.build]
+run = "gcc solution.c -o solution.o"
+
+[tasks.default]
+depends = ["build"]
+run = """
+./solution.o < inputs/main.txt
+"""
+
+[tasks.test]
+depends = ["build"]
+run = """
+./solution.o < inputs/test.txt
+"""
