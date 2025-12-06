@@ -2,104 +2,102 @@
 
 қолдану кеңістік стандартты_кіріспе;
 
-const char DELIM = ' ';
-
-struct Problem {
-  vector<string> numbers;
-  vector<long> longs;
-  bool addition;
+құрылыс Мәселе {
+  вектор<жол> сандар;
+  вектор<ұзын> ұзындар;
+  тексеріс қосу;
 };
 
-vector<string> get_lines() {
-  vector<string> lines;
-  string line;
-  while(std::getline(std::cin, line)) {
-    lines.push_back(line);
+вектор<жол> жолдарды_алу() {
+  вектор<жол> жолдар;
+  жол жол_жеке;
+  while(std::getline(std::cin, жол_жеке)) {
+    жолдар.артқа_қосу(жол_жеке);
   }
-  return lines;
+  қайтару жолдар;
 }
 
-int empty_column(vector<string> lines, int col) {
-  for (int i=0; i<lines.size(); ++i) if (lines[i][col] != ' ') return false;
-  return true;
+сан бос_баған(вектор<жол> жолдар, сан баған) {
+  үшін (сан i=0; i<жолдар.ұзындығы(); ++i) if (жолдар[i][баған] != ' ') қайтару жалған;
+  қайтару ақиқат;
 }
 
-vector<Problem> get_problems() {
-  vector<string> lines = get_lines();
-  vector<Problem> problems;
+вектор<Мәселе> мәселелерді_алу() {
+  вектор<жол> жолдар = жолдарды_алу();
+  вектор<Мәселе> мәселелер;
 
-  int rows = lines.size();
-  int cols = lines[0].size();
+  сан жолдар_саны = жолдар.ұзындығы();
+  сан бағандар_саны = жолдар[0].ұзындығы();
 
-  int index = 0;
-  for (int i=0; i<cols; ++i) {
-    if (!empty_column(lines, i) && i != cols-1) continue;
-    vector<string> numbers;
-    vector<long> longs;
-    int len = i == cols-1 ? i-index + 1 : i-index;
-    // Ignore the operation layer
-    for (int j=0; j<rows-1; ++j) {
-      string number = lines[j].substr(index, len);
-      numbers.push_back(number);
-      longs.push_back(stol(number));
+  сан индекс = 0;
+  үшін (сан i=0; i<бағандар_саны; ++i) {
+    if (!бос_баған(жолдар, i) && i != бағандар_саны-1) жалғастыру;
+    вектор<жол> сандар;
+    вектор<ұзын> ұзындар;
+    сан ұзындығы = i == бағандар_саны-1 ? i-индекс + 1 : i-индекс;
+    // Амал қабатын елемеу
+    үшін (сан j=0; j<жолдар_саны-1; ++j) {
+      жол сан = жолдар[j].жоласты(индекс, ұзындығы);
+      сандар.артқа_қосу(сан);
+      ұзындар.артқа_қосу(stol(сан));
     }
-    string operation_row = lines[rows-1].substr(index, len);
-    bool addition = operation_row.find('+') != string::npos;
+    жол амал_жолы = жолдар[жолдар_саны-1].жоласты(индекс, ұзындығы);
+    тексеріс қосу = амал_жолы.іздеу('+') != жол::npos;
 
-    index = i + 1;
-    problems.push_back({ numbers, longs, addition });
+    индекс = i + 1;
+    мәселелер.артқа_қосу({ сандар, ұзындар, қосу });
   }
-  return problems;
+  қайтару мәселелер;
 }
 
-void part_one(vector<Problem> problems) {
-  int line_num = 0;
-  long total = 0;
+void бірінші_бөлім(вектор<Мәселе> мәселелер) {
+  сан жол_нөмірі = 0;
+  ұзын жалпы = 0;
 
-  for (int i=0; i<problems.size(); ++i) {
-    Problem problem = problems[i];
-    long val = problem.longs[0];
-    for (int j=1; j<problem.longs.size(); ++j) {
-      if (problem.addition) val += problem.longs[j];
-      else val *= problem.longs[j];
+  үшін (сан i=0; i<мәселелер.ұзындығы(); ++i) {
+    Мәселе мәселе = мәселелер[i];
+    ұзын мән = мәселе.ұзындар[0];
+    үшін (сан j=1; j<мәселе.ұзындар.ұзындығы(); ++j) {
+      if (мәселе.қосу) мән += мәселе.ұзындар[j];
+      else мән *= мәселе.ұзындар[j];
     }
-    total += val;
+    жалпы += мән;
   }
-  cout << "Part One is " << total << endl;
+  cout << "Бірінші бөлім: " << жалпы << endl;
 }
 
-long solve_problem(Problem problem) {
-  int rows = problem.numbers.size();
-  int cols = problem.numbers[0].size();
-  vector<string> numbers(cols);
+ұзын мәселені_шешу(Мәселе мәселе) {
+  сан жолдар_саны = мәселе.сандар.ұзындығы();
+  сан бағандар_саны = мәселе.сандар[0].ұзындығы();
+  вектор<жол> сандар(бағандар_саны);
 
-  for (int i=0; i<cols; ++i) {
-    for (int j=0; j<rows; ++j) {
-      if (problem.numbers[j][i] == ' ') continue;
-      numbers[i] += problem.numbers[j][i];
+  үшін (сан i=0; i<бағандар_саны; ++i) {
+    үшін (сан j=0; j<жолдар_саны; ++j) {
+      if (мәселе.сандар[j][i] == ' ') жалғастыру;
+      сандар[i] += мәселе.сандар[j][i];
     }
   }
 
-  long total = stol(numbers[0]);
-  for (int i=1; i<numbers.size(); ++i) {
-    if (problem.addition) total += stol(numbers[i]);
-    else total *= stol(numbers[i]);
+  ұзын жалпы = stol(сандар[0]);
+  үшін (сан i=1; i<сандар.ұзындығы(); ++i) {
+    if (мәселе.қосу) жалпы += stol(сандар[i]);
+    else жалпы *= stol(сандар[i]);
   }
-  return total;
-  return 0;
+  қайтару жалпы;
+  қайтару 0;
 }
 
-void part_two(vector<Problem> problems) {
-  long total = 0;
-  for (int i=0; i<problems.size(); ++i) {
-    total += solve_problem(problems[i]);
+void екінші_бөлім(вектор<Мәселе> мәселелер) {
+  ұзын жалпы = 0;
+  үшін (сан i=0; i<мәселелер.ұзындығы(); ++i) {
+    жалпы += мәселені_шешу(мәселелер[i]);
   }
-  cout << "Part Two is " << total << endl;
+  cout << "Екінші бөлім: " << жалпы << endl;
 }
 
 елбасы() {
-  vector<Problem> problems = get_problems();
-  part_one(problems);
-  part_two(problems);
-  return 0;
+  вектор<Мәселе> мәселелер = мәселелерді_алу();
+  бірінші_бөлім(мәселелер);
+  екінші_бөлім(мәселелер);
+  қайтару 0;
 }
