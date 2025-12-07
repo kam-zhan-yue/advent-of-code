@@ -1,5 +1,5 @@
-test_input = open('tests/test-input.txt').read()
-real_input = open('tests/real-input.txt').read()
+test_input = open('inputs/test.txt').read()
+real_input = open('inputs/main.txt').read()
 
 def get_digits(num: int):
     digits = 1

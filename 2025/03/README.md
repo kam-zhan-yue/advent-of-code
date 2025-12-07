@@ -1,3 +1,7 @@
+# Day 3 - Elixir
+
+My first encounter with a functional language! Honestly, not as bad as it seems and elixir benefits a lot from having an interactive shell like python. In fact, I found the experience really enjoyable. However, my smooth brained solution ended up failing some edge cases and I had to make a solution in python and compare both outputs to find out which cases were failing. A common pitfall with functional languages is the difficulty to debug, I imagine.
+
 ## Brainstorming
 
 ### Part One
