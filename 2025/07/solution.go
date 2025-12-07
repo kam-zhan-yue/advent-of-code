@@ -7,7 +7,6 @@ import (
   "strings"
 )
 
-const DOT = '.'
 const SPLITTER = '^'
 
 func partOne(lines []string) {
@@ -30,7 +29,33 @@ func partOne(lines []string) {
     beams = nextBeams
   }
 
-  fmt.Printf("Part One is %d", splits)
+  fmt.Printf("Part One is %d\n", splits)
+}
+
+func travel(lines []string, beam int, index int, cache map[[2]int]int) int {
+  if cached := cache[[2]int{index, beam}]; cached > 0 {
+    return cached
+  }
+
+  if index >= len(lines) {
+    return 0
+  }
+
+  char := lines[index][beam]
+  if char == SPLITTER {
+    left := travel(lines, beam - 1, index + 1, cache)
+    right := 1 + travel(lines, beam + 1, index + 1, cache)
+    cache[[2]int{index, beam}] = left + right
+    return left + right
+  }
+  return travel(lines, beam, index+1, cache)
+}
+
+func partTwo(lines []string) {
+  start := strings.Index(lines[0], "S")
+  cache := make(map[[2]int]int)
+  total := 1 + travel(lines, start, 1, cache)
+  fmt.Printf("Part Two is %d\n", total)
 }
 
 func main() {
@@ -42,5 +67,6 @@ func main() {
   }
 
   partOne(lines)
+  partTwo(lines)
 }
 
