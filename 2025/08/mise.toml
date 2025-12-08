@@ -1,0 +1,22 @@
+[env]
+PROJECT_NAME = "{{ config_root | basename }}"
+BUILD_DIR = "{{ config_root }}/build"
+
+[tasks.configure]
+run = "mkdir -p $BUILD_DIR && cd $BUILD_DIR && cmake .."
+
+[tasks.build]
+depends = ["configure"]
+run = "cmake --build $BUILD_DIR"
+
+[tasks.default]
+depends = ["build"]
+run = """
+$BUILD_DIR/$PROJECT_NAME < inputs/main.txt
+"""
+
+[tasks.test]
+depends = ["build"]
+run = """
+$BUILD_DIR/$PROJECT_NAME < inputs/test.txt
+"""
