@@ -63,10 +63,6 @@ public:
     return 1;
   }
 
-  int connected_circuits() {
-    return circuits.size();
-  }
-
   long get_part_one() {
     long part_one = 1;
     vector<size_t> sizes;
@@ -80,6 +76,12 @@ public:
       part_one *= sizes[i];
     }
     return part_one;
+  }
+
+  bool is_complete() {
+    vector<int> connected = circuits.begin()->second;
+    bool completed = connected.size() == points.size();
+    return completed;
   }
 };
 
@@ -163,14 +165,19 @@ void solve(vector<Point> points, int connections) {
   for (const auto& [distance, pair] : distances) {
     const auto& [p1, p2] = pair;
     connected += graph.connect(p1, p2);
-    if (connected >= connections) break;
+
+    if (connected == connections) {
+      cout << "Part One: " << graph.get_part_one() << endl;
+    }
+
+    // If we connected all of them, then break
+    if (graph.is_complete()) {
+      long long p1_x = points[p1].x;
+      long long p2_x = points[p2].x;
+      cout << "Part Two: " << p1_x * p2_x << endl;
+      break;
+    }
   }
-
-
-  /*graph.print();*/
-
-  cout << "Connected Circuits: " << graph.connected_circuits() << endl;
-  cout << "Part One: " << graph.get_part_one() << endl;
 }
 
 int main() {
