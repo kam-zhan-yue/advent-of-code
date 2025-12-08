@@ -70,6 +70,12 @@ int main() {
 
   GLFWwindow *window = init();
 
+  // Build Shaders
+  Shader lightShader = Shader(
+    "shaders/light-vertex.glsl",
+    "shaders/light-fragment.glsl"
+  );
+
   while (!glfwWindowShouldClose(window)) {
     // Init Render Loop
     float currentFrame = glfwGetTime();
