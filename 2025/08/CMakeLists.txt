@@ -36,10 +36,9 @@ add_executable(${PROJECT_NAME})
 
 # Link Libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm)
+target_include_directories(${PROJECT_NAME} PRIVATE internal shaders)
 
 target_sources(${PROJECT_NAME}
   PRIVATE
     solution.cpp
 )
-
-message(${PROJECT_NAME})
