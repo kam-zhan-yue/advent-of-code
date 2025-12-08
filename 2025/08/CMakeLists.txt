@@ -35,7 +35,7 @@ FetchContent_MakeAvailable(glm)
 add_executable(${PROJECT_NAME})
 
 # Link Libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm)
 
 target_sources(${PROJECT_NAME}
   PRIVATE

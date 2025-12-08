@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
@@ -10,6 +11,20 @@ struct Point {
   long y;
   long z;
 };
+
+
+// OpenGL Stuff
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow *window, float &deltaTime);
+void mouseCallback(GLFWwindow *window, double xPos, double yPos);
+void scrollCallback(GLFWwindow *window, double xPos, double yPos);
+
+// Algorithm Stuff
+int get_connections();
+void solve(vector<Point> points, int connections);
+int get_closest_point(vector<Point> points, int index);
+long long length(Point a, Point b);
+vector<Point> get_points();
 
 class Graph {
 private:
@@ -87,20 +102,60 @@ public:
   }
 };
 
+GLFWwindow *init() {
+  // Init GLFW and set the context variables
+  glfwInit();
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  #ifdef __APPLE__
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  #endif
 
-array<string_view, 2> split(string_view str, char delimiter) {
-  array<string_view, 2> tokens;
-  size_t start = 0;
-  size_t end = str.find(delimiter);
-  tokens[0] = (str.substr(start, end));
-  tokens[1] = (str.substr(end, str.size()));
-  return tokens;
+  // Create a window object
+  GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+  if (window == NULL) {
+    std::cout << "Failed to create GLFW window" << std::endl;
+    glfwTerminate();
+    throw std::runtime_error("Failed to initialize GLFW");
+  }
+  glfwMakeContextCurrent(window);
+
+  // Initialise GLAD
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    std::cout << "Failed to initialise GLAD" << std::endl;
+    throw std::runtime_error("Failed to initialize GLAD");
+  }
+
+  // Tell OpenGL the size of the rendering window so that OpenGL knows how we want to display the data and coordinates
+  glViewport(0, 0, 800, 600);
+
+
+  // Register the frame buffer size callback when the user resizes the window
+  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+  // Hide cursor and register cursor callback
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  glfwSetCursorPosCallback(window, mouseCallback);
+  glfwSetScrollCallback(window, scrollCallback);
+
+  glEnable(GL_DEPTH_TEST);
+
+  return window;
+}
+
+int main() {
+  GLFWwindow *window = init();
+  /*int connections = get_connections();*/
+  /*vector<Point> points = get_points();*/
+  /*solve(points, connections);*/
+
+  return 0;
 }
 
 int get_connections() {
   string line;
   getline(cin, line);
-  cout << "Connections: " << line << endl;
   return stol(line);
 }
 
@@ -125,31 +180,6 @@ vector<Point> get_points() {
 
   }
   return points;
-}
-
-long long length(Point a, Point b) {
-  long long dx = (long long)a.x - b.x;
-  long long dy = (long long)a.y - b.y;
-  long long dz = (long long)a.z - b.z;
-  return dx*dx + dy*dy + dz*dz;
-}
-
-// TODO: Optimise
-int get_closest_point(vector<Point> points, int index) {
-  long squared_distance = 0;
-  int min_index = -1;
-  for (int i=0; i<points.size(); ++i) {
-    if (i == index) continue;
-    long distance = length(points[index], points[i]);
-    if (min_index < 0) {
-      squared_distance = distance;
-      min_index = i;
-    } else if (distance < squared_distance) {
-      squared_distance = distance;
-      min_index = i;
-    }
-  }
-  return min_index;
 }
 
 void solve(vector<Point> points, int connections) {
@@ -182,9 +212,57 @@ void solve(vector<Point> points, int connections) {
   }
 }
 
-int main() {
-  int connections = get_connections();
-  vector<Point> points = get_points();
-  solve(points, connections);
+long long length(Point a, Point b) {
+  long long dx = (long long)a.x - b.x;
+  long long dy = (long long)a.y - b.y;
+  long long dz = (long long)a.z - b.z;
+  return dx*dx + dy*dy + dz*dz;
 }
 
+int get_closest_point(vector<Point> points, int index) {
+  long squared_distance = 0;
+  int min_index = -1;
+  for (int i=0; i<points.size(); ++i) {
+    if (i == index) continue;
+    long distance = length(points[index], points[i]);
+    if (min_index < 0) {
+      squared_distance = distance;
+      min_index = i;
+    } else if (distance < squared_distance) {
+      squared_distance = distance;
+      min_index = i;
+    }
+  }
+  return min_index;
+}
+
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+  glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow *window, float &deltaTime) {
+  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, true);
+  }
+  /*camera.process(window, deltaTime);*/
+}
+
+void mouseCallback(GLFWwindow *window, double xPos, double yPos) {
+  /*if (firstMouse) {*/
+  /*  lastX = xPos;*/
+  /*  lastY = yPos;*/
+  /*  firstMouse = false;*/
+  /*}*/
+  /**/
+  /*float xOffset = xPos - lastX;*/
+  /*float yOffset = lastY - yPos;*/
+  /*lastX = xPos;*/
+  /*lastY = yPos;*/
+
+  /*camera.processMouse(xOffset, yOffset);*/
+}
+
+void scrollCallback(GLFWwindow *window, double xOffset, double yOffset) {
+  /*camera.processScroll(xOffset, yOffset);*/
+}
