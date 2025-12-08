@@ -1,10 +1,11 @@
 #include <iostream>
-#include <algorithm.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <shader.h>
+#include <solution.h>
 
+using namespace std;
 
 // OpenGL Stuff
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -25,16 +26,16 @@ GLFWwindow *init() {
   // Create a window object
   GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
   if (window == NULL) {
-    std::cout << "Failed to create GLFW window" << std::endl;
+    cout << "Failed to create GLFW window" << endl;
     glfwTerminate();
-    throw std::runtime_error("Failed to initialize GLFW");
+    throw runtime_error("Failed to initialize GLFW");
   }
   glfwMakeContextCurrent(window);
 
   // Initialise GLAD
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cout << "Failed to initialise GLAD" << std::endl;
-    throw std::runtime_error("Failed to initialize GLAD");
+    cout << "Failed to initialise GLAD" << endl;
+    throw runtime_error("Failed to initialize GLAD");
   }
 
   // Tell OpenGL the size of the rendering window so that OpenGL knows how we want to display the data and coordinates
