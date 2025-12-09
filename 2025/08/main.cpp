@@ -8,11 +8,20 @@
 
 using namespace std;
 
+struct Scene {
+  Shader lightShader;
+  unsigned int lightVAO;
+};
+
 // OpenGL Stuff
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, float &deltaTime);
 void mouseCallback(GLFWwindow *window, double xPos, double yPos);
 void scrollCallback(GLFWwindow *window, double xPos, double yPos);
+
+// Rendering Stuff
+Scene generateScene();
+void renderScene(Scene scene);
 
 // Global Variables
 bool firstMouse = false;
@@ -59,6 +68,7 @@ GLFWwindow *init() {
   glfwSetScrollCallback(window, scrollCallback);
 
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_PROGRAM_POINT_SIZE);
 
   return window;
 }
@@ -71,10 +81,7 @@ int main() {
   GLFWwindow *window = init();
 
   // Build Shaders
-  Shader lightShader = Shader(
-    "shaders/light-vertex.glsl",
-    "shaders/light-fragment.glsl"
-  );
+  Scene scene = generateScene();
 
   while (!glfwWindowShouldClose(window)) {
     // Init Render Loop
@@ -84,12 +91,69 @@ int main() {
     processInput(window, deltaTime);
 
     // Render Stuff
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    renderScene(scene);
 
     // End Render Loop
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
   return 0;
+}
+
+unsigned int generateLightVAO() {
+  float vertices[] = {
+    // Points           // Colours, Radius, Maybe
+    0.0f, 0.0f, 0.0f
+  };
+
+  unsigned int VAO, VBO;
+  // Generate
+  glGenVertexArrays(1, &VAO);
+  glGenBuffers(1, &VBO);
+
+  // Bind
+  glBindVertexArray(VAO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+  // Data
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+  // Unbind
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  return VAO;
+}
+
+Scene generateScene() {
+  Shader lightShader = Shader(
+    "shaders/light-vertex.glsl",
+    "shaders/light-fragment.glsl"
+  );
+
+  // Generate Vertex Arrays
+  unsigned int lightVAO = generateLightVAO();
+
+  return {
+    lightShader,
+    lightVAO
+  };
+}
+
+void renderScene(Scene scene) {
+  scene.lightShader.use();
+  scene.lightShader.setVec3("cameraPos", camera.cameraPos);
+  /*float length = glm::length(camera.cameraPos);*/
+  /*cout << "Camera Pos is " << length << endl;*/
+  scene.lightShader.setMat4("view", camera.getLookAt());
+  scene.lightShader.setMat4("projection", camera.getPerspective());
+  scene.lightShader.setMat4("model", glm::mat4(1.0));
+  glBindVertexArray(scene.lightVAO);
+  glDrawArrays(GL_POINTS, 0, 1);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
