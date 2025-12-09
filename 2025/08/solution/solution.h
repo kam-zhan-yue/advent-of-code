@@ -2,6 +2,7 @@
 #define SOLUTION_H
 
 #include <map>
+#include <iostream>
 
 using namespace std;
 
@@ -90,6 +91,54 @@ public:
     vector<int> connected = circuits.begin()->second;
     bool completed = connected.size() == points.size();
     return completed;
+  }
+};
+
+
+class Solver {
+private:
+  Graph graph;
+  multimap<long long, tuple<int, int>> distances;
+public:
+  int connections;
+  vector<Point> points;
+
+  Solver() :
+    connections(get_connections()),
+    points(get_points()),
+    graph(points)
+  {
+    cout << "Solver Inited" << endl;
+    // Generate distances
+    for (int i=0; i<points.size(); ++i) {
+      for (int j=i+1; j<points.size(); ++j) {
+        long distance = length(points[i], points[j]);
+        distances.insert({ distance, { i, j} });
+      }
+    }
+  }
+
+  void tick() {
+  }
+
+  void solve() {
+    int connected = 0;
+    for (const auto& [distance, pair] : distances) {
+      const auto& [p1, p2] = pair;
+      connected += graph.connect(p1, p2);
+
+      if (connected == connections) {
+        cout << "Part One: " << graph.get_part_one() << endl;
+      }
+
+      // If we connected all of them, then break
+      if (graph.is_complete()) {
+        long long p1_x = points[p1].x;
+        long long p2_x = points[p2].x;
+        cout << "Part Two: " << p1_x * p2_x << endl;
+        break;
+      }
+    }
   }
 };
 

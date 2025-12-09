@@ -1,5 +1,4 @@
 #include <solution.h>
-#include <iostream>
 
 int get_connections() {
   string line;

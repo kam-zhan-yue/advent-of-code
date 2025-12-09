@@ -20,3 +20,9 @@ depends = ["build"]
 run = """
 $BUILD_DIR/$PROJECT_NAME < inputs/test.txt
 """
+
+[tasks.visualise]
+depends = ["build"]
+run = """
+$BUILD_DIR/$PROJECT_NAME < inputs/opengl.txt
+"""
