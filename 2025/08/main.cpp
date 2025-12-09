@@ -122,6 +122,28 @@ unsigned int generateLightVAO() {
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
+  // TODO: Replace with positions
+  glm::vec3 positions[100];
+  int index = 0;
+  float offset = 0.1f;
+  for (int y=-10; y<10; y+=2) {
+    for (int x=-10; x<10; x+= 2) {
+      glm::vec3 translation;
+      translation.x = (float)x / 10.0f + offset;
+      translation.y = (float)y / 10.0f + offset;
+      translation.z = 0;
+      positions[index++] = translation;
+    }
+  }
+
+  unsigned int instanceVBO;
+  glGenBuffers(1, &instanceVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 100, &positions[0], GL_STATIC_DRAW);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribDivisor(1, 1);
+
   // Unbind
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -153,7 +175,9 @@ void renderScene(Scene scene) {
   scene.lightShader.setMat4("projection", camera.getPerspective());
   scene.lightShader.setMat4("model", glm::mat4(1.0));
   glBindVertexArray(scene.lightVAO);
-  glDrawArrays(GL_POINTS, 0, 1);
+  glDrawArraysInstanced(GL_POINTS, 0, 1, 100);
+
+  /*glDrawArrays(GL_POINTS, 0, 1);*/
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
