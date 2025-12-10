@@ -13,11 +13,17 @@ As a challenge, I chose to include languages that I thought were interesting or 
 | 5 | [C](05/README.md) |
 | 6 | [Qaz++](06/README.md) |
 | 7 | [Go*](07/README.md) |
-| 8 | _ |
-| 9 | _ |
+| 8 | [C++](08/README.md) |
+| 9 | [Python](09/README.md) |
 | 10 | _ |
 | 11 | _ |
 | 12 | _ |
+
+Remaining:
+- Lua
+- Typescript
+- Rust
+- C#
 
 
 > * indicates either a language I had never learned before or an unusual one
