@@ -70,7 +70,7 @@ GLFWwindow *init() {
   #endif
 
   // Create a window object
-  GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(800, 600, "Day 8: Playground", NULL, NULL);
   if (window == NULL) {
     cout << "Failed to create GLFW window" << endl;
     glfwTerminate();
