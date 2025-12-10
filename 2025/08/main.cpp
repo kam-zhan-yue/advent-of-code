@@ -27,13 +27,17 @@ Scene generateScene();
 void updateScene(Scene scene);
 void renderScene(Scene scene);
 
-const float INTERVAL = 0.2;
+const float INTERVAL = 0.01;
+const float COMPRESSOR = 10000;
+const glm::vec3 OFFSET = glm::vec3(-5, -5, -5);
 const glm::vec3 INACTIVE = glm::vec3(0.2);
 
 // Global Variables
 bool firstMouse = false;
 bool running = false;
 bool spacePressed = false;
+bool jPressed = false;
+bool tickRequested = false;
 float tick = 0.0f;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -43,6 +47,17 @@ Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 Solver solver;
 default_random_engine generator;
 uniform_real_distribution<double> distribution;
+map<int, glm::vec3> circuitMap;
+
+// Galaxy Pallete
+vector<glm::vec3> palette = {
+    {0.9f, 0.9f, 1.0f},  // star white
+    {0.6f, 0.7f, 1.0f},  // blue star
+    {0.9f, 0.6f, 1.0f},  // nebula purple
+    {1.0f, 0.5f, 0.8f},  // magenta cloud
+    {0.6f, 0.4f, 0.9f},  // deep violet
+    {0.9f, 0.7f, 0.5f},  // dusty glow
+};
 
 GLFWwindow *init() {
   // Init GLFW and set the context variables
@@ -104,7 +119,7 @@ int main() {
     processInput(window, deltaTime);
 
     // Render Stuff
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     updateScene(scene);
     renderScene(scene);
@@ -115,8 +130,6 @@ int main() {
   }
   return 0;
 }
-
-const float COMPRESSOR = 10000;
 
 unsigned int generateLightVAO() {
   float vertices[] = {
@@ -146,8 +159,15 @@ unsigned int generateLightVAO() {
     position.x = (float)point.x;
     position.y = (float)point.y;
     position.z = (float)point.z;
+    position /= COMPRESSOR;
+    position.x += OFFSET.x;
+    position.y += OFFSET.y;
+    position.z += OFFSET.z;
+    /*std::cout << position.x << ", "*/
+    /*  << position.y << ", "*/
+    /*  << position.z << ", " << std::endl;*/
     // Compress so that they are not too far away
-    positions.push_back(position / COMPRESSOR);
+    positions.push_back(position);
   }
 
   // Position Data (Instanced Array)
@@ -192,12 +212,9 @@ Scene generateScene() {
     "shaders/light-vertex.glsl",
     "shaders/light-fragment.glsl"
   );
-
   // Generate Vertex Arrays
   unsigned int lightVAO = generateLightVAO();
-  
   unsigned int colourVBO = generateColourVBO(lightVAO);
-
   return {
     lightShader,
     lightVAO,
@@ -206,9 +223,10 @@ Scene generateScene() {
 }
 
 void updateScene(Scene scene) {
-  if (!running) {
+  if (!running && !tickRequested) {
     return;
   }
+  tickRequested = false;
 
   // Iterate the solver on each tick of the program
   tick -= deltaTime;
@@ -217,15 +235,19 @@ void updateScene(Scene scene) {
 
     vector<glm::vec3> colours;
     for (int i=0; i<solver.graph.points.size(); ++i) {
-      int circuit_num = solver.graph.get_circuit_num(i);
-      if (circuit_num == -1) {
+      int circuitNum = solver.graph.get_circuit_num(i);
+      if (circuitNum == -1) {
         colours.push_back(INACTIVE);
-      } else {
-        float r = distribution(generator);
-        float g = distribution(generator);
-        float b = distribution(generator);
-        glm::vec3 colour = glm::vec3(r, g, b);
+      } else if (circuitMap.count(circuitNum)){
+        glm::vec3 colour = circuitMap[circuitNum];
         colours.push_back(colour);
+      } else {
+        int i = rand() % palette.size();
+        int j = rand() % palette.size();
+        float t = distribution(generator);
+        glm::vec3 colour = glm::mix(palette[i], palette[j], t);
+        colours.push_back(colour);
+        circuitMap.insert({ circuitNum, colour });
       }
     }
     // Update the colours accordingly
@@ -262,6 +284,14 @@ void processInput(GLFWwindow *window, float &deltaTime) {
     }
   } else {
     spacePressed = false;
+  }
+  if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS && !tickRequested) {
+    if (!jPressed) {
+      tickRequested = true;
+      jPressed = true;
+    }
+  } else {
+    jPressed = false;
   }
   camera.process(window, deltaTime);
 }

@@ -17,7 +17,7 @@ public:
 
   float cameraSpeed = 2.5f;
   float sensitivity = 0.1f;
-  float zoom = 100.0f;
+  float zoom = 45.0f;
 
   Camera(glm::vec3 initialPos) {
     cameraPos = initialPos;
