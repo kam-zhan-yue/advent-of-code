@@ -14,8 +14,6 @@ struct Scene {
   Shader lightShader;
   unsigned int lightVAO;
   unsigned int colourVBO;
-  default_random_engine generator;
-  uniform_real_distribution<double> distribution;
 };
 
 // OpenGL Stuff
@@ -26,10 +24,11 @@ void scrollCallback(GLFWwindow *window, double xPos, double yPos);
 
 // Rendering Stuff
 Scene generateScene();
-void updateScene(Scene &scene);
+void updateScene(Scene scene);
 void renderScene(Scene scene);
 
 const float INTERVAL = 0.2;
+const glm::vec3 INACTIVE = glm::vec3(0.2);
 
 // Global Variables
 bool firstMouse = false;
@@ -42,6 +41,8 @@ float lastX = 400.0f;
 float lastY = 300.0f;
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 Solver solver;
+default_random_engine generator;
+uniform_real_distribution<double> distribution;
 
 GLFWwindow *init() {
   // Init GLFW and set the context variables
@@ -88,8 +89,11 @@ GLFWwindow *init() {
 int main() {
   GLFWwindow *window = init();
 
-  /*Solver solver = generateSolver();*/
-  /*// Build Shaders*/
+  // Randonmess
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  default_random_engine generator(seed);
+  uniform_real_distribution<double> distribution(0.0, 1.0);
+
   Scene scene = generateScene();
 
   while (!glfwWindowShouldClose(window)) {
@@ -166,7 +170,7 @@ unsigned int generateColourVBO(unsigned int lightVAO) {
   glBindVertexArray(lightVAO);
   vector<glm::vec3> colours;
   for (int i=0; i<solver.graph.points.size(); ++i) {
-    colours.push_back(glm::vec3(1.0, 1.0, 1.0));
+    colours.push_back(INACTIVE);
   }
 
   // Colour Data (Instanced Array) - it seems like we would have to merge them otherwise
@@ -194,21 +198,14 @@ Scene generateScene() {
   
   unsigned int colourVBO = generateColourVBO(lightVAO);
 
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-  default_random_engine generator(seed);
-  uniform_real_distribution<double> distribution(0.0, 1.0);
-
-
   return {
     lightShader,
     lightVAO,
     colourVBO,
-    generator,
-    distribution,
   };
 }
 
-void updateScene(Scene &scene) {
+void updateScene(Scene scene) {
   if (!running) {
     return;
   }
@@ -220,11 +217,16 @@ void updateScene(Scene &scene) {
 
     vector<glm::vec3> colours;
     for (int i=0; i<solver.graph.points.size(); ++i) {
-      float r = scene.distribution(scene.generator);
-      float g = scene.distribution(scene.generator);
-      float b = scene.distribution(scene.generator);
-      glm::vec3 colour = glm::vec3(r, g, b);
-      colours.push_back(colour);
+      int circuit_num = solver.graph.get_circuit_num(i);
+      if (circuit_num == -1) {
+        colours.push_back(INACTIVE);
+      } else {
+        float r = distribution(generator);
+        float g = distribution(generator);
+        float b = distribution(generator);
+        glm::vec3 colour = glm::vec3(r, g, b);
+        colours.push_back(colour);
+      }
     }
     // Update the colours accordingly
     glBindVertexArray(scene.lightVAO);

@@ -31,6 +31,14 @@ public:
     points = p;
   }
 
+  // Helper function for visualisation
+  int get_circuit_num(int point_index) {
+    if (!hashmap.count(point_index)) {
+      return -1;
+    }
+    return hashmap[point_index];
+  }
+
   int connect(int a, int b) {
     // If either are in the graph and in the same circuit, then do nothing
     if (hashmap.count(a) && hashmap.count(b) && hashmap.at(a) == hashmap.at(b)) {
@@ -99,6 +107,8 @@ public:
 class Solver {
 private:
   multimap<long long, tuple<int, int>> distances;
+  multimap<long long, tuple<int, int>>::iterator it;
+  int ticks = 0;
 public:
   // IMPORTANT: Connections needs to run before Graph!!!
   // This is bad code, please never do this!!!
@@ -115,14 +125,20 @@ public:
         distances.insert({ distance, { i, j} });
       }
     }
+    it = distances.begin();
   }
 
   void tick() {
+    if (ticks > 0 && graph.is_complete()) return;
+    const auto& [p1, p2] = it->second;
+    graph.connect(p1, p2);
+    it++;
+    ticks++;
   }
 
   void solve() {
     int connected = 0;
-    for (const auto& [distance, pair] : distances) {
+    for (const auto& [_, pair] : distances) {
       const auto& [p1, p2] = pair;
       connected += graph.connect(p1, p2);
 
