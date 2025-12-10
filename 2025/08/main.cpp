@@ -5,12 +5,17 @@
 #include <solution.h>
 #include <shader.h>
 #include <camera.h>
+#include <random>
+#include <chrono>
 
 using namespace std;
 
 struct Scene {
   Shader lightShader;
   unsigned int lightVAO;
+  unsigned int colourVBO;
+  default_random_engine generator;
+  uniform_real_distribution<double> distribution;
 };
 
 // OpenGL Stuff
@@ -21,10 +26,16 @@ void scrollCallback(GLFWwindow *window, double xPos, double yPos);
 
 // Rendering Stuff
 Scene generateScene();
+void updateScene(Scene &scene);
 void renderScene(Scene scene);
+
+const float INTERVAL = 0.2;
 
 // Global Variables
 bool firstMouse = false;
+bool running = false;
+bool spacePressed = false;
+float tick = 0.0f;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 float lastX = 400.0f;
@@ -77,7 +88,8 @@ GLFWwindow *init() {
 int main() {
   GLFWwindow *window = init();
 
-  // Build Shaders
+  /*Solver solver = generateSolver();*/
+  /*// Build Shaders*/
   Scene scene = generateScene();
 
   while (!glfwWindowShouldClose(window)) {
@@ -90,6 +102,7 @@ int main() {
     // Render Stuff
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    updateScene(scene);
     renderScene(scene);
 
     // End Render Loop
@@ -98,6 +111,8 @@ int main() {
   }
   return 0;
 }
+
+const float COMPRESSOR = 10000;
 
 unsigned int generateLightVAO() {
   float vertices[] = {
@@ -120,19 +135,22 @@ unsigned int generateLightVAO() {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
   vector<glm::vec3> positions;
-  for (Point point : solver.points) {
+  vector<Point> points = solver.graph.points;
+  for (int i=0; i<points.size(); ++i) {
+    Point point = points[i];
     glm::vec3 position;
     position.x = (float)point.x;
     position.y = (float)point.y;
     position.z = (float)point.z;
-    /*cout << "x " << position.x << " y " << position.y << " z " << position.z << endl;*/
-    positions.push_back(position);
+    // Compress so that they are not too far away
+    positions.push_back(position / COMPRESSOR);
   }
 
-  unsigned int instanceVBO;
-  glGenBuffers(1, &instanceVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) *  solver.points.size(), &positions[0], GL_STATIC_DRAW);
+  // Position Data (Instanced Array)
+  unsigned int positionVBO;
+  glGenBuffers(1, &positionVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), &positions[0], GL_STATIC_DRAW);
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glVertexAttribDivisor(1, 1);
@@ -144,6 +162,27 @@ unsigned int generateLightVAO() {
   return VAO;
 }
 
+unsigned int generateColourVBO(unsigned int lightVAO) {
+  glBindVertexArray(lightVAO);
+  vector<glm::vec3> colours;
+  for (int i=0; i<solver.graph.points.size(); ++i) {
+    colours.push_back(glm::vec3(1.0, 1.0, 1.0));
+  }
+
+  // Colour Data (Instanced Array) - it seems like we would have to merge them otherwise
+  unsigned int colourVBO;
+  glGenBuffers(1, &colourVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, colourVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) *  solver.graph.points.size(), colours.data(), GL_DYNAMIC_DRAW);
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribDivisor(2, 1);
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  return colourVBO;
+}
+
 Scene generateScene() {
   Shader lightShader = Shader(
     "shaders/light-vertex.glsl",
@@ -152,11 +191,48 @@ Scene generateScene() {
 
   // Generate Vertex Arrays
   unsigned int lightVAO = generateLightVAO();
+  
+  unsigned int colourVBO = generateColourVBO(lightVAO);
+
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  default_random_engine generator(seed);
+  uniform_real_distribution<double> distribution(0.0, 1.0);
+
 
   return {
     lightShader,
-    lightVAO
+    lightVAO,
+    colourVBO,
+    generator,
+    distribution,
   };
+}
+
+void updateScene(Scene &scene) {
+  if (!running) {
+    return;
+  }
+
+  // Iterate the solver on each tick of the program
+  tick -= deltaTime;
+  if (tick < 0) {
+    solver.tick();
+
+    vector<glm::vec3> colours;
+    for (int i=0; i<solver.graph.points.size(); ++i) {
+      float r = scene.distribution(scene.generator);
+      float g = scene.distribution(scene.generator);
+      float b = scene.distribution(scene.generator);
+      glm::vec3 colour = glm::vec3(r, g, b);
+      colours.push_back(colour);
+    }
+    // Update the colours accordingly
+    glBindVertexArray(scene.lightVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, scene.colourVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * colours.size(), colours.data());
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+  }
 }
 
 void renderScene(Scene scene) {
@@ -166,7 +242,7 @@ void renderScene(Scene scene) {
   scene.lightShader.setMat4("projection", camera.getPerspective());
   scene.lightShader.setMat4("model", glm::mat4(1.0));
   glBindVertexArray(scene.lightVAO);
-  glDrawArraysInstanced(GL_POINTS, 0, 1, solver.points.size());
+  glDrawArraysInstanced(GL_POINTS, 0, 1, solver.graph.points.size());
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -176,6 +252,14 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 void processInput(GLFWwindow *window, float &deltaTime) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, true);
+  }
+  if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+    if (!spacePressed) {
+      running = !running;
+      spacePressed = true;
+    }
+  } else {
+    spacePressed = false;
   }
   camera.process(window, deltaTime);
 }

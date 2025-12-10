@@ -17,7 +17,7 @@ public:
 
   float cameraSpeed = 2.5f;
   float sensitivity = 0.1f;
-  float zoom = 45.0f;
+  float zoom = 100.0f;
 
   Camera(glm::vec3 initialPos) {
     cameraPos = initialPos;
@@ -34,7 +34,7 @@ public:
   }
 
   glm::mat4 getPerspective() {
-    return glm::perspective(glm::radians(zoom), 800.0f / 600.0f, 0.1f, 100000.0f);
+    return glm::perspective(glm::radians(zoom), 800.0f / 600.0f, 0.1f, 10000.0f);
   }
 
   void process(GLFWwindow *window, float &deltaTime) {

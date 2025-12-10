@@ -20,12 +20,13 @@ int get_closest_point(vector<Point> points, int index);
 
 class Graph {
 private:
-  vector<Point> points;
   map<int, int> hashmap;
   map<int, vector<int>> circuits;
   int circuit_num = 0;
 
 public:
+  vector<Point> points;
+
   Graph(vector<Point> p) {
     points = p;
   }
@@ -97,19 +98,17 @@ public:
 
 class Solver {
 private:
-  Graph graph;
   multimap<long long, tuple<int, int>> distances;
 public:
+  // IMPORTANT: Connections needs to run before Graph!!!
+  // This is bad code, please never do this!!!
   int connections;
-  vector<Point> points;
+  Graph graph;
 
-  Solver() :
-    connections(get_connections()),
-    points(get_points()),
-    graph(points)
-  {
+  Solver() : connections(get_connections()), graph(get_points()) {
     cout << "Solver Inited" << endl;
     // Generate distances
+    vector<Point> points = graph.points;
     for (int i=0; i<points.size(); ++i) {
       for (int j=i+1; j<points.size(); ++j) {
         long distance = length(points[i], points[j]);
@@ -133,8 +132,8 @@ public:
 
       // If we connected all of them, then break
       if (graph.is_complete()) {
-        long long p1_x = points[p1].x;
-        long long p2_x = points[p2].x;
+        long long p1_x = graph.points[p1].x;
+        long long p2_x = graph.points[p2].x;
         cout << "Part Two: " << p1_x * p2_x << endl;
         break;
       }
