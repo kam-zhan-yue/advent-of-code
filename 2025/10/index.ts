@@ -120,23 +120,16 @@ function solution(inputs: string[]) {
     const problem = parse(input)
     partOne += solveIndicators(problem)
     partTwo += solveJoltages(problem)
+    console.log(`${partTwo}`)
 	}
   console.log(`Part One is ${partOne}`)
   console.log(`Part Two is ${partTwo}`)
 }
 
 
-//console.log(solveIndicators(parse("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}")))
+console.log(solveIndicators(parse("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}")))
+console.log(solveJoltages(parse("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}")))
 
-//const problem = new Problem(
-//  [false, true, true, false],
-//  [ { values: [0, 2] }, { values: [0, 1] } ],
-//  [0],
-//)
-//
-//solveProblem(problem)
-
-//
-//solution(testInput)
+solution(testInput)
 //solution(mainInput)
 
