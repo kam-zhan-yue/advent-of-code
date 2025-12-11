@@ -4,4 +4,5 @@ mise run //2025/01
 '''
 
 [tools]
+lua = "latest"
 uv = "latest"
