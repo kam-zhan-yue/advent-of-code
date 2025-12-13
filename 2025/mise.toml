@@ -4,5 +4,6 @@ mise run //2025/01
 '''
 
 [tools]
+deno = "latest"
 lua = "latest"
 uv = "latest"

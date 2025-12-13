@@ -1,5 +1,7 @@
-const testInput = (await Bun.file("inputs/test.txt").text()).split("\n")
-const mainInput = (await Bun.file("inputs/main.txt").text()).split("\n")
+//import { init } from 'z3-solver'
+
+const testInput = (await Deno.readTextFile('inputs/test.txt')).split('\n')
+const mainInput = (await Deno.readTextFile('inputs/main.txt')).split('\n')
 
 interface Button {
   values: number[]
@@ -102,35 +104,34 @@ function solveIndicators(problem: Problem) {
   } return presses
 }
 
-function solveJoltages(problem: Problem) {
-  let presses = 1
-  while (!problem.checkJoltages()) {
-    presses += 1
-    if (presses > 200) break 
-  }
-  return presses
-}
-
-
 function solution(inputs: string[]) {
   let partOne = 0
-  let partTwo = 0
 	for (const input of inputs) {
     if (!input) continue
     const problem = parse(input)
     partOne += solveIndicators(problem)
-    partTwo += solveJoltages(problem)
-    console.log(`${partTwo}`)
 	}
   console.log(`Part One is ${partOne}`)
-  console.log(`Part Two is ${partTwo}`)
 }
-
-
-console.log(solveIndicators(parse("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}")))
-console.log(solveJoltages(parse("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}")))
 
 solution(testInput)
 solution(mainInput)
 
-
+//
+//
+//const { Context } = await init()
+//const Z3 = Context('main')
+//const x = Z3.Int.const('x')
+//const y = Z3.Int.const('y')
+//const solver = new Z3.Solver()
+//solver.add(x.add(2).le(y.sub(10)))
+//solver.add(x.ge(0))
+//
+//const sat = await solver.check()
+//if (sat === 'sat') {
+//  const model = solver.model()
+//  console.log(model.get(x), model.get(y))
+//} else {
+//  console.log('not found')
+//}
+//
