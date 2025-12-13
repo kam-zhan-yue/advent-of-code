@@ -131,5 +131,6 @@ console.log(solveIndicators(parse("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4
 console.log(solveJoltages(parse("[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}")))
 
 solution(testInput)
-//solution(mainInput)
+solution(mainInput)
+
 
