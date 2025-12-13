@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { init, type Arith, type Bool } from 'z3-solver'
+import { init, type Arith } from 'z3-solver'
 
 const testInput = readFileSync('inputs/test.txt', 'utf-8').split('\n')
 const mainInput = readFileSync('inputs/main.txt', 'utf-8').split('\n')
@@ -91,7 +91,7 @@ async function solveJoltages(problem: Problem, Context: Awaited<ReturnType<typeo
     if (!equation) {
       throw new Error("This equation is impossible!")
     }
-    if (equation.length === 0) {
+    if (equation.length === 1) {
       optimizer.add(equation[0]!.eq(joltage))
     } else {
       optimizer.add(equation.reduce((sum, x) => sum.add(x)).eq(joltage))
