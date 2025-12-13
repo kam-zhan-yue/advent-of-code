@@ -1,7 +1,9 @@
-//import { init } from 'z3-solver'
+import { readFileSync } from 'node:fs'
+import { init } from 'z3-solver'
 
-const testInput = (await Deno.readTextFile('inputs/test.txt')).split('\n')
-const mainInput = (await Deno.readTextFile('inputs/main.txt')).split('\n')
+
+const testInput = readFileSync('inputs/test.txt', 'utf-8').split('\n')
+const mainInput = readFileSync('inputs/main.txt', 'utf-8').split('\n')
 
 interface Button {
   values: number[]
@@ -117,21 +119,21 @@ function solution(inputs: string[]) {
 solution(testInput)
 solution(mainInput)
 
-//
-//
-//const { Context } = await init()
-//const Z3 = Context('main')
-//const x = Z3.Int.const('x')
-//const y = Z3.Int.const('y')
-//const solver = new Z3.Solver()
-//solver.add(x.add(2).le(y.sub(10)))
-//solver.add(x.ge(0))
-//
-//const sat = await solver.check()
-//if (sat === 'sat') {
-//  const model = solver.model()
-//  console.log(model.get(x), model.get(y))
-//} else {
-//  console.log('not found')
-//}
-//
+
+
+const { Context } = await init()
+const Z3 = Context('main')
+const x = Z3.Int.const('x')
+const y = Z3.Int.const('y')
+const solver = new Z3.Solver()
+solver.add(x.add(2).le(y.sub(10)))
+solver.add(x.ge(0))
+
+const sat = await solver.check()
+if (sat === 'sat') {
+  const model = solver.model()
+  console.log(model.get(x), model.get(y))
+} else {
+  console.log('not found')
+}
+

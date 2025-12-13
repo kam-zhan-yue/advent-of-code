@@ -1,2 +1,2 @@
 [tasks.default]
-run = "deno run --allow-read main.ts"
+run = "npm run solve"
