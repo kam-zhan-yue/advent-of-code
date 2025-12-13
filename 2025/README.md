@@ -15,9 +15,9 @@ As a challenge, I chose to include languages that I thought were interesting or 
 | 7 | [Go*](07/README.md) |
 | 8 | [C++](08/README.md) |
 | 9 | [Python](09/README.md) |
-| 10 | _ |
-| 11 | _ |
-| 12 | _ |
+| 10 | [TypeScript/Node](10/README.md) |
+| 11 | [Lua](11/README.md) |
+| 12 | [Rust](12/README.md) |
 
 Remaining:
 - Lua
