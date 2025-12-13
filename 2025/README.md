@@ -19,11 +19,4 @@ As a challenge, I chose to include languages that I thought were interesting or 
 | 11 | [Lua](11/README.md) |
 | 12 | [Rust](12/README.md) |
 
-Remaining:
-- Lua
-- Typescript
-- Rust
-- C#
-
-
 > * indicates either a language I had never learned before or an unusual one
