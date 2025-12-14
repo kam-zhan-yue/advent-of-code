@@ -23,3 +23,24 @@ mise tasks ls --all
 # to run all problems in a specific year at once (if supported)
 mise run //2025
 ```
+
+## Inputs
+
+Put your inputs for each year in a $YEAR/inputs/$DAY.txt format like so:
+
+```
+2025/
+  inputs/
+    󰦪  01.txt
+    󰦪  02.txt
+    󰦪  03.txt
+    󰦪  04.txt
+    󰦪  05.txt
+    󰦪  06.txt
+    󰦪  07.txt
+    󰦪  08.txt
+    󰦪  09.txt
+    󰦪  10.txt
+    󰦪  11.txt
+    󰦪  12.txt
+```

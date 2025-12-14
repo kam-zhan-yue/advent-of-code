@@ -1,5 +1,3 @@
 [tasks.default]
-run = "go run . < inputs/main.txt"
+run = "go run . < ../inputs/07.txt"
 
-[tasks.test]
-run = "go run . < inputs/test.txt"

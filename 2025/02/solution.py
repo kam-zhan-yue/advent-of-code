@@ -1,5 +1,4 @@
-test_input = open('inputs/test.txt').read()
-real_input = open('inputs/main.txt').read()
+real_input = open('../inputs/02.txt').read()
 
 def get_digits(num: int):
     digits = 1
@@ -50,8 +49,5 @@ def part_two(input: str):
 
     print("Part Two is:", total)
 
-part_one(test_input)
 part_one(real_input)
-
-part_two(test_input)
 part_two(real_input)

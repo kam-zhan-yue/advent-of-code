@@ -1,8 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { init, type Arith } from 'z3-solver'
 
-const testInput = readFileSync('inputs/test.txt', 'utf-8').split('\n')
-const mainInput = readFileSync('inputs/main.txt', 'utf-8').split('\n')
+const mainInput = readFileSync('../inputs/10.txt', 'utf-8').split('\n')
 
 interface Button {
   values: number[]
@@ -128,5 +127,4 @@ const { Context } = await init()
   console.log(`Part Two is ${partTwo}`)
 }
 
-solution(testInput)
 solution(mainInput)

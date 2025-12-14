@@ -51,13 +51,10 @@ defmodule Solution do
   end
 end
 
-{:ok, test} = File.read("inputs/test.txt")
-{:ok, main} = File.read("inputs/main.txt")
+{:ok, main} = File.read("../inputs/03.txt")
 
 IO.puts("===Part One===")
-Solution.solve(test, 2)
 Solution.solve(main, 2)
 
 IO.puts("===Part Two===")
-Solution.solve(test, 12)
 Solution.solve(main, 12)

@@ -1,5 +1,8 @@
 # Day 2 - Piet
 
+> [!NOTE]
+> If you are running the Piet input, add a ',-1' to the end of your input to act as a sentinel
+
 If you've never heard of Piet, now's your chance to stop reading and turn back.
 
 Piet is an esoteric language where you draw your code with coloured pixels as opposed to using any text. The original language specification was written by dangermouse, but an official Piet interpreter has never been written. It uses a direction vector to navigate a 2D grid of pixels where the subsequent changes in hues or brightness correspond to a specific command. It is a stack based language, so every command interacts with the stack in some way.

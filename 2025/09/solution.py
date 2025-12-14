@@ -1,5 +1,4 @@
-test_input = open('inputs/test.txt').readlines()
-main_input = open('inputs/main.txt').readlines()
+main_input = open('../inputs/09.txt').readlines()
 
 class Point:
     x: int
@@ -84,7 +83,5 @@ def solve(points: list[Point]):
     print("Part Two is:", max_area)
 
 
-test_points = get_points(test_input)
 main_points = get_points(main_input)
-solve(test_points)
 solve(main_points)

@@ -1,9 +1,15 @@
 [tasks.default]
 run = '''
 mise run //2025/01
+mise run //2025/02
+mise run //2025/03
+# mise run //2025/04 skip bash as it takes too long
+mise run //2025/05
+mise run //2025/06
+mise run //2025/07
+# mise run //2025/08 skip OpenGL until I separate out the logic
+mise run //2025/09
+mise run //2025/10
+mise run //2025/11
+mise run //2025/12
 '''
-
-[tools]
-deno = "latest"
-lua = "latest"
-uv = "latest"

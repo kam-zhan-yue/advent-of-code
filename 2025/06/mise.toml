@@ -12,11 +12,5 @@ run = "cmake --build $BUILD_DIR"
 [tasks.default]
 depends = ["build"]
 run = """
-$BUILD_DIR/$PROJECT_NAME < inputs/main.txt
-"""
-
-[tasks.test]
-depends = ["build"]
-run = """
-$BUILD_DIR/$PROJECT_NAME < inputs/test.txt
+$BUILD_DIR/$PROJECT_NAME < ../inputs/06.txt
 """

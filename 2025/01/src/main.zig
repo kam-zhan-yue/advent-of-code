@@ -11,7 +11,7 @@ pub fn main() !void {
     var clicks: i32 = 0;
 
     // File Operations
-    const file = try std.fs.cwd().openFile("input.txt", .{});
+    const file = try std.fs.cwd().openFile("../inputs/01.txt", .{});
     defer file.close();
     var file_buffer: [4096]u8 = undefined;
     var reader = file.reader(&file_buffer);

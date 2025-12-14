@@ -1,7 +1,4 @@
-local main_file = io.open("inputs/main.txt", "r")
-local part_one_test_file = io.open("inputs/part_one_test.txt", "r")
-local part_two_test_file = io.open("inputs/part_two_test.txt", "r")
-
+local main_file = io.open("../inputs/11.txt", "r")
 
 local function build_map(file)
   local map = {}
@@ -89,12 +86,7 @@ local function solve(map, part)
   end
 end
 
-local part_one_test_map = build_map(part_one_test_file)
-local part_two_test_map = build_map(part_two_test_file)
 local main_map = build_map(main_file)
 
-solve(part_one_test_map, 1)
 solve(main_map, 1)
-
-solve(part_two_test_map, 2)
 solve(main_map, 2)

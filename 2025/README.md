@@ -20,4 +20,4 @@ As a challenge, I chose to include languages that I thought were interesting or 
 | 12 | [Rust](12/README.md) |
 
 > [!NOTE]
-> * indicates either a language I had never learned before or an unusual one
+> '*' indicates either a language I had never learned before or an unusual one
