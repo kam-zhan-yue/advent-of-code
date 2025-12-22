@@ -21,11 +21,11 @@ int get_closest_point(vector<Point> points, int index);
 class Graph {
 private:
   map<int, int> hashmap;
-  map<int, vector<int>> circuits;
   int circuit_num = 0;
 
 public:
   vector<Point> points;
+  map<int, vector<int>> circuits;
 
   Graph(vector<Point> p) {
     points = p;
@@ -42,7 +42,7 @@ public:
   int connect(int a, int b) {
     // If either are in the graph and in the same circuit, then do nothing
     if (hashmap.count(a) && hashmap.count(b) && hashmap.at(a) == hashmap.at(b)) {
-      return 1;
+      return 0;
     }
 
     // If neither are in the graph, then init them together
@@ -128,12 +128,12 @@ public:
     it = distances.begin();
   }
 
-  void tick() {
-    if (ticks > 0 && graph.is_complete()) return;
+  int tick() {
+    if (ticks > 0 && graph.is_complete()) return 1;
     const auto& [p1, p2] = it->second;
-    graph.connect(p1, p2);
     it++;
     ticks++;
+    return graph.connect(p1, p2);
   }
 
   void solve() {

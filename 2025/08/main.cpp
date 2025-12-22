@@ -23,7 +23,9 @@ struct Lights {
 
 struct Lines {
   unsigned int VAO;
-  unsigned int positionBuffer;
+  unsigned int baseBuffer;
+  unsigned int startBuffer;
+  unsigned int endBuffer;
 };
 
 struct Scene {
@@ -37,6 +39,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window, float &deltaTime);
 void mouseCallback(GLFWwindow *window, double xPos, double yPos);
 void scrollCallback(GLFWwindow *window, double xPos, double yPos);
+glm::vec3 point_to_vec3(Point point);
 
 // Rendering Stuff
 Scene generateScene();
@@ -64,6 +67,7 @@ Solver solver;
 default_random_engine generator;
 uniform_real_distribution<double> distribution;
 map<int, glm::vec3> circuitMap;
+int numLines = 0;
 
 // Galaxy Pallete
 vector<glm::vec3> palette = {
@@ -113,6 +117,9 @@ GLFWwindow *init() {
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_PROGRAM_POINT_SIZE);
+  glEnable(GL_LINE_SMOOTH);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   return window;
 }
@@ -156,16 +163,7 @@ Lights generateLights() {
   vector<glm::vec3> colours;
   vector<Point> points = solver.graph.points;
   for (int i=0; i<points.size(); ++i) {
-    Point point = points[i];
-    glm::vec3 position;
-    position.x = (float)point.x;
-    position.y = (float)point.y;
-    position.z = (float)point.z;
-    position /= COMPRESSOR;
-    position.x += OFFSET.x;
-    position.y += OFFSET.y;
-    position.z += OFFSET.z;
-    positions.push_back(position);
+    positions.push_back(point_to_vec3(points[i]));
     colours.push_back(INACTIVE);
   }
 
@@ -183,9 +181,9 @@ Lights generateLights() {
   glGenBuffers(1, &colourBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, colourBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) *  solver.graph.points.size(), colours.data(), GL_DYNAMIC_DRAW);
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-  glVertexAttribDivisor(2, 1);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribDivisor(1, 1);
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -199,13 +197,41 @@ Lights generateLights() {
 Lines generateLines() {
   unsigned int VAO;
   glGenVertexArrays(1, &VAO);
+  glBindVertexArray(VAO);
 
-  unsigned int positionBuffer;
-  glGenBuffers(1, &positionBuffer);
+  vector<glm::vec3> points;
+  for (int i=0; i<solver.graph.points.size() * 0.5; ++i) {
+    points.push_back(glm::vec3(0.0));
+  }
+  
+  float base[2] = { 0.0f, 1.0f };
+  unsigned int baseBuffer;
+  glGenBuffers(1, &baseBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, baseBuffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(base), base, GL_STATIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
+  glVertexAttribDivisor(0, 0); // per-vertex
+  
+  unsigned int startBuffer;
+  glGenBuffers(1, &startBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, startBuffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_DYNAMIC_DRAW);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribDivisor(1, 1);
+
+  unsigned int endBuffer;
+  glGenBuffers(1, &endBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, endBuffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_DYNAMIC_DRAW);
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribDivisor(2, 1);
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  return { VAO, positionBuffer };
+  return { VAO, baseBuffer, startBuffer, endBuffer };
 }
 
 Shaders generateShaders() {
@@ -222,6 +248,18 @@ Scene generateScene() {
   };
 }
 
+glm::vec3 point_to_vec3(Point point) {
+  glm::vec3 position;
+  position.x = (float)point.x;
+  position.y = (float)point.y;
+  position.z = (float)point.z;
+  position /= COMPRESSOR;
+  position.x += OFFSET.x;
+  position.y += OFFSET.y;
+  position.z += OFFSET.z;
+  return position;
+}
+
 void updateScene(Scene scene) {
   if (!running && !tickRequested) {
     return;
@@ -231,7 +269,10 @@ void updateScene(Scene scene) {
   // Iterate the solver on each tick of the program
   tick -= deltaTime;
   if (tick < 0) {
-    solver.tick();
+    int ticked = solver.tick();
+    while (ticked == 0) {
+      ticked = solver.tick();
+    }
 
     vector<glm::vec3> colours;
     for (int i=0; i<solver.graph.points.size(); ++i) {
@@ -250,10 +291,33 @@ void updateScene(Scene scene) {
         circuitMap.insert({ circuitNum, colour });
       }
     }
+
     // Update the colours accordingly
     glBindVertexArray(scene.lights.VAO);
     glBindBuffer(GL_ARRAY_BUFFER, scene.lights.colourBuffer);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * colours.size(), colours.data());
+
+    // Update the lines
+    vector<glm::vec3> starts;
+    vector<glm::vec3> ends;
+    for (const auto& [_, vec] : solver.graph.circuits) {
+      for (int i=0; i<vec.size(); i++) {
+        if (i == vec.size() - 1) break;
+        glm::vec3 start = point_to_vec3(solver.graph.points[vec[i]]);
+        glm::vec3 end = point_to_vec3(solver.graph.points[vec[i+1]]);
+        starts.push_back(start);
+        ends.push_back(end);
+      }
+    }
+    numLines = starts.size();
+    cout << "Num Lines are: " << numLines << endl;
+    glBindVertexArray(scene.lines.VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, scene.lines.startBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * starts.size(), starts.data());
+    glBindBuffer(GL_ARRAY_BUFFER, scene.lines.endBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * ends.size(), ends.data());
+
+    // Unbind
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
@@ -262,12 +326,20 @@ void updateScene(Scene scene) {
 void renderScene(Scene scene) {
   Shader light = scene.shaders.light;
   light.use();
-  light.setVec3("cameraPos", camera.cameraPos);
   light.setMat4("view", camera.getLookAt());
   light.setMat4("projection", camera.getPerspective());
   light.setMat4("model", glm::mat4(1.0));
   glBindVertexArray(scene.lights.VAO);
   glDrawArraysInstanced(GL_POINTS, 0, 1, solver.graph.points.size());
+
+  Shader line = scene.shaders.line;
+  line.use();
+  line.setMat4("view", camera.getLookAt());
+  line.setMat4("projection", camera.getPerspective());
+  line.setMat4("model", glm::mat4(1.0));
+  glBindVertexArray(scene.lines.VAO);
+  /*glDrawArrays(GL_LINES, 0, numLines * 2);*/
+  glDrawArraysInstanced(GL_LINES, 0, 2, numLines);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
