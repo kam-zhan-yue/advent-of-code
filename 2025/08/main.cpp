@@ -10,10 +10,26 @@
 
 using namespace std;
 
+struct Shaders {
+  Shader light;
+  Shader line;
+};
+
+struct Lights {
+  unsigned int VAO;
+  unsigned int positionBuffer;
+  unsigned int colourBuffer;
+};
+
+struct Lines {
+  unsigned int VAO;
+  unsigned int positionBuffer;
+};
+
 struct Scene {
-  Shader lightShader;
-  unsigned int lightVAO;
-  unsigned int colourVBO;
+  Shaders shaders;
+  Lights lights;
+  Lines lines;
 };
 
 // OpenGL Stuff
@@ -131,27 +147,13 @@ int main() {
   return 0;
 }
 
-unsigned int generateLightVAO() {
-  float vertices[] = {
-    // Points           // Colours, Radius, Maybe
-    0.0f, 0.0f, 0.0f
-  };
-
-  unsigned int VAO, VBO;
-  // Generate
+Lights generateLights() {
+  unsigned int VAO;
   glGenVertexArrays(1, &VAO);
-  glGenBuffers(1, &VBO);
-
-  // Bind
   glBindVertexArray(VAO);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-  // Data
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
   vector<glm::vec3> positions;
+  vector<glm::vec3> colours;
   vector<Point> points = solver.graph.points;
   for (int i=0; i<points.size(); ++i) {
     Point point = points[i];
@@ -163,40 +165,23 @@ unsigned int generateLightVAO() {
     position.x += OFFSET.x;
     position.y += OFFSET.y;
     position.z += OFFSET.z;
-    /*std::cout << position.x << ", "*/
-    /*  << position.y << ", "*/
-    /*  << position.z << ", " << std::endl;*/
-    // Compress so that they are not too far away
     positions.push_back(position);
-  }
-
-  // Position Data (Instanced Array)
-  unsigned int positionVBO;
-  glGenBuffers(1, &positionVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), &positions[0], GL_STATIC_DRAW);
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-  glVertexAttribDivisor(1, 1);
-
-  // Unbind
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  return VAO;
-}
-
-unsigned int generateColourVBO(unsigned int lightVAO) {
-  glBindVertexArray(lightVAO);
-  vector<glm::vec3> colours;
-  for (int i=0; i<solver.graph.points.size(); ++i) {
     colours.push_back(INACTIVE);
   }
 
+  // Position Data (Instanced Array)
+  unsigned int positionBuffer;
+  glGenBuffers(1, &positionBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, positionBuffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), &positions[0], GL_STATIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribDivisor(0, 1);
+
   // Colour Data (Instanced Array) - it seems like we would have to merge them otherwise
-  unsigned int colourVBO;
-  glGenBuffers(1, &colourVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, colourVBO);
+  unsigned int colourBuffer;
+  glGenBuffers(1, &colourBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, colourBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) *  solver.graph.points.size(), colours.data(), GL_DYNAMIC_DRAW);
   glEnableVertexAttribArray(2);
   glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -204,21 +189,36 @@ unsigned int generateColourVBO(unsigned int lightVAO) {
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  return colourVBO;
+  // Unbind
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  return { VAO, positionBuffer, colourBuffer };
+}
+
+Lines generateLines() {
+  unsigned int VAO;
+  glGenVertexArrays(1, &VAO);
+
+  unsigned int positionBuffer;
+  glGenBuffers(1, &positionBuffer);
+
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  return { VAO, positionBuffer };
+}
+
+Shaders generateShaders() {
+  Shader light = Shader("shaders/light-vertex.glsl", "shaders/light-fragment.glsl");
+  Shader line = Shader("shaders/line-vertex.glsl", "shaders/line-fragment.glsl");
+  return { light, line };
 }
 
 Scene generateScene() {
-  Shader lightShader = Shader(
-    "shaders/light-vertex.glsl",
-    "shaders/light-fragment.glsl"
-  );
-  // Generate Vertex Arrays
-  unsigned int lightVAO = generateLightVAO();
-  unsigned int colourVBO = generateColourVBO(lightVAO);
   return {
-    lightShader,
-    lightVAO,
-    colourVBO,
+    .shaders = generateShaders(),
+    .lights = generateLights(),
+    .lines = generateLines(),
   };
 }
 
@@ -251,8 +251,8 @@ void updateScene(Scene scene) {
       }
     }
     // Update the colours accordingly
-    glBindVertexArray(scene.lightVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, scene.colourVBO);
+    glBindVertexArray(scene.lights.VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, scene.lights.colourBuffer);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * colours.size(), colours.data());
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -260,12 +260,13 @@ void updateScene(Scene scene) {
 }
 
 void renderScene(Scene scene) {
-  scene.lightShader.use();
-  scene.lightShader.setVec3("cameraPos", camera.cameraPos);
-  scene.lightShader.setMat4("view", camera.getLookAt());
-  scene.lightShader.setMat4("projection", camera.getPerspective());
-  scene.lightShader.setMat4("model", glm::mat4(1.0));
-  glBindVertexArray(scene.lightVAO);
+  Shader light = scene.shaders.light;
+  light.use();
+  light.setVec3("cameraPos", camera.cameraPos);
+  light.setMat4("view", camera.getLookAt());
+  light.setMat4("projection", camera.getPerspective());
+  light.setMat4("model", glm::mat4(1.0));
+  glBindVertexArray(scene.lights.VAO);
   glDrawArraysInstanced(GL_POINTS, 0, 1, solver.graph.points.size());
 }
 
