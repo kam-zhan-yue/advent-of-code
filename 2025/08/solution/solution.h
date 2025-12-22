@@ -12,7 +12,11 @@ struct Point {
   long z;
 };
 
-int get_connections();
+struct Connection {
+  Point a;
+  Point b;
+};
+
 vector<Point> get_points();
 long long length(Point a, Point b);
 void solve(vector<Point> points, int connections);
@@ -25,6 +29,7 @@ private:
 
 public:
   vector<Point> points;
+  vector<Connection> connections;
   map<int, vector<int>> circuits;
 
   Graph(vector<Point> p) {
@@ -50,6 +55,7 @@ public:
       circuits.insert({ circuit_num, { a, b } });
       hashmap.insert({ a, circuit_num });
       hashmap.insert({ b, circuit_num });
+      connections.push_back({ points[a], points[b] });
       circuit_num++;
       return 1;
     }
@@ -58,12 +64,14 @@ public:
       int circuit_id = hashmap[a];
       hashmap.insert({ b, circuit_id });
       circuits[circuit_id].push_back(b);
+      connections.push_back({ points[a], points[b] });
       return 1;
     }
     if (hashmap.count(b) && !hashmap.count(a)) {
       int circuit_id = hashmap[b];
       hashmap.insert({ a, circuit_id });
       circuits[circuit_id].push_back(a);
+      connections.push_back({ points[a], points[b] });
       return 1;
     }
 
@@ -78,6 +86,7 @@ public:
       hashmap[node] = ca;
     }
     circuits.erase(cb);
+    connections.push_back({ points[a], points[b] });
     return 1;
   }
 
@@ -112,10 +121,9 @@ private:
 public:
   // IMPORTANT: Connections needs to run before Graph!!!
   // This is bad code, please never do this!!!
-  int connections;
   Graph graph;
 
-  Solver() : connections(get_connections()), graph(get_points()) {
+  Solver() : graph(get_points()) {
     cout << "Solver Inited" << endl;
     // Generate distances
     vector<Point> points = graph.points;
@@ -142,7 +150,7 @@ public:
       const auto& [p1, p2] = pair;
       connected += graph.connect(p1, p2);
 
-      if (connected == connections) {
+      if (connected == 1000) {
         cout << "Part One: " << graph.get_part_one() << endl;
       }
 

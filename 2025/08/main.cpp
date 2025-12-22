@@ -23,9 +23,7 @@ struct Lights {
 
 struct Lines {
   unsigned int VAO;
-  unsigned int baseBuffer;
-  unsigned int startBuffer;
-  unsigned int endBuffer;
+  unsigned int positionBuffer;
 };
 
 struct Scene {
@@ -67,7 +65,6 @@ Solver solver;
 default_random_engine generator;
 uniform_real_distribution<double> distribution;
 map<int, glm::vec3> circuitMap;
-int numLines = 0;
 
 // Galaxy Pallete
 vector<glm::vec3> palette = {
@@ -200,38 +197,20 @@ Lines generateLines() {
   glBindVertexArray(VAO);
 
   vector<glm::vec3> points;
-  for (int i=0; i<solver.graph.points.size() * 0.5; ++i) {
+  for (int i=0; i<solver.graph.points.size() * 2; ++i) {
     points.push_back(glm::vec3(0.0));
   }
   
-  float base[2] = { 0.0f, 1.0f };
-  unsigned int baseBuffer;
-  glGenBuffers(1, &baseBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, baseBuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(base), base, GL_STATIC_DRAW);
+  unsigned int positionBuffer;
+  glGenBuffers(1, &positionBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, positionBuffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_DYNAMIC_DRAW);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
-  glVertexAttribDivisor(0, 0); // per-vertex
-  
-  unsigned int startBuffer;
-  glGenBuffers(1, &startBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, startBuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_DYNAMIC_DRAW);
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-  glVertexAttribDivisor(1, 1);
-
-  unsigned int endBuffer;
-  glGenBuffers(1, &endBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, endBuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_DYNAMIC_DRAW);
-  glEnableVertexAttribArray(2);
-  glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-  glVertexAttribDivisor(2, 1);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  return { VAO, baseBuffer, startBuffer, endBuffer };
+  return { VAO, positionBuffer };
 }
 
 Shaders generateShaders() {
@@ -273,7 +252,6 @@ void updateScene(Scene scene) {
     while (ticked == 0) {
       ticked = solver.tick();
     }
-
     vector<glm::vec3> colours;
     for (int i=0; i<solver.graph.points.size(); ++i) {
       int circuitNum = solver.graph.get_circuit_num(i);
@@ -298,32 +276,28 @@ void updateScene(Scene scene) {
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * colours.size(), colours.data());
 
     // Update the lines
-    vector<glm::vec3> starts;
-    vector<glm::vec3> ends;
-    for (const auto& [_, vec] : solver.graph.circuits) {
-      for (int i=0; i<vec.size(); i++) {
-        if (i == vec.size() - 1) break;
-        glm::vec3 start = point_to_vec3(solver.graph.points[vec[i]]);
-        glm::vec3 end = point_to_vec3(solver.graph.points[vec[i+1]]);
-        starts.push_back(start);
-        ends.push_back(end);
-      }
+    vector<glm::vec3> connections;
+    for (int i=0; i<solver.graph.connections.size(); ++i) {
+      connections.push_back(point_to_vec3(solver.graph.connections[i].a));
+      connections.push_back(point_to_vec3(solver.graph.connections[i].b));
     }
-    numLines = starts.size();
-    cout << "Num Lines are: " << numLines << endl;
     glBindVertexArray(scene.lines.VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, scene.lines.startBuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * starts.size(), starts.data());
-    glBindBuffer(GL_ARRAY_BUFFER, scene.lines.endBuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * ends.size(), ends.data());
+    glBindBuffer(GL_ARRAY_BUFFER, scene.lines.positionBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * connections.size(), connections.data());
 
     // Unbind
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Turn off ticking
+    if (solver.graph.is_complete())  {
+      running = false;
+    }
   }
 }
 
 void renderScene(Scene scene) {
+  // Render Lights
   Shader light = scene.shaders.light;
   light.use();
   light.setMat4("view", camera.getLookAt());
@@ -332,14 +306,14 @@ void renderScene(Scene scene) {
   glBindVertexArray(scene.lights.VAO);
   glDrawArraysInstanced(GL_POINTS, 0, 1, solver.graph.points.size());
 
+  // Render Lines
   Shader line = scene.shaders.line;
   line.use();
   line.setMat4("view", camera.getLookAt());
   line.setMat4("projection", camera.getPerspective());
   line.setMat4("model", glm::mat4(1.0));
   glBindVertexArray(scene.lines.VAO);
-  /*glDrawArrays(GL_LINES, 0, numLines * 2);*/
-  glDrawArraysInstanced(GL_LINES, 0, 2, numLines);
+  glDrawArrays(GL_LINES, 0, solver.graph.connections.size() * 2);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {

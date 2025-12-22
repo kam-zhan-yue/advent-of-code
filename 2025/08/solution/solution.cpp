@@ -1,12 +1,5 @@
 #include <solution.h>
 
-int get_connections() {
-  cout << "Get Connections" << endl;
-  string line;
-  getline(cin, line);
-  return stol(line);
-}
-
 vector<Point> get_points() {
   cout << "Get Points" << endl;
   vector<Point> points;
