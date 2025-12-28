@@ -17,7 +17,7 @@ pub fn solve(input: &str) {
     println!("Part Two: {}", part_two(&left, &right));
 }
 
-fn part_one(left: &Vec<i32>, right: &Vec<i32>) -> i32 {
+fn part_one(left: &[i32], right: &[i32]) -> i32 {
     assert!(left.len() == right.len());
     let mut difference = 0i32;
     for i in 0..left.len() {
@@ -26,19 +26,18 @@ fn part_one(left: &Vec<i32>, right: &Vec<i32>) -> i32 {
     difference
 }
 
-fn part_two(left: &Vec<i32>, right: &Vec<i32>) -> i32 {
+fn part_two(left: &[i32], right: &[i32]) -> i32 {
     // create a map from the right 
     let mut map: HashMap<i32, i32> = HashMap::new();
-    for i in 0..right.len() {
-        map.entry(right[i]).and_modify(|entry| *entry += 1).or_insert(1);
+    for val in right {
+        map.entry(*val).and_modify(|entry| *entry += 1).or_insert(1);
     }
 
     let mut similarity = 0i32;
-    for i in 0..left.len() {
-        match map.get(&left[i]) {
-            Some(val) => similarity += left[i] * val,
-            None => (),
-        };
+    for val in left {
+        if let Some(freq) = map.get(val) {
+            similarity += val * freq;
+        }
     }
     similarity
 }
@@ -54,7 +53,7 @@ mod tests {
         let mut right: Vec<i32> = [ 4, 3, 5, 3, 9, 3 ].to_vec();
         left.sort();
         right.sort();
-        assert_eq!(part_one(left, right), 11);
+        assert_eq!(part_one(&left, &right), 11);
     }
 
     #[test]
@@ -63,6 +62,6 @@ mod tests {
         let mut right: Vec<i32> = [ 4, 3, 5, 3, 9, 3 ].to_vec();
         left.sort();
         right.sort();
-        assert_eq!(part_two(left, right), 31);
+        assert_eq!(part_two(&left, &right), 31);
     }
 }
