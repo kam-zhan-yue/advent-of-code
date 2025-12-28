@@ -1,4 +1,4 @@
-local main_file = io.open("../inputs/11.txt", "r")
+local main_file = io.open("../inputs/11", "r")
 
 local function build_map(file)
   local map = {}

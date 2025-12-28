@@ -1,2 +1,2 @@
 [tasks.default]
-run = "cargo run < ../inputs/12.txt"
+run = "cargo run < ../inputs/12"

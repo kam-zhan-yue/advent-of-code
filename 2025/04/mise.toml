@@ -9,13 +9,13 @@ chmod +x ./part-two.sh
 depends = ["configure"]
 run = """
 echo "Part One"
-./part-one.sh < ../inputs/04.txt
+./part-one.sh < ../inputs/04
 echo "Part Two"
-./part-two.sh < ../inputs/04.txt
+./part-two.sh < ../inputs/04
 """
 
 [tasks.one]
-run = "./part-one.sh < ../inputs/04.txt"
+run = "./part-one.sh < ../inputs/04"
 
 [tasks.two]
-run = "./part-two.sh < ../inputs/04.txt"
+run = "./part-two.sh < ../inputs/04"

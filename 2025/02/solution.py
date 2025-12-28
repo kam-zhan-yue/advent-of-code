@@ -1,4 +1,4 @@
-real_input = open('../inputs/02.txt').read()
+real_input = open('../inputs/02').read()
 
 def get_digits(num: int):
     digits = 1

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { init, type Arith } from 'z3-solver'
 
-const mainInput = readFileSync('../inputs/10.txt', 'utf-8').split('\n')
+const mainInput = readFileSync('../inputs/10', 'utf-8').split('\n')
 
 interface Button {
   values: number[]

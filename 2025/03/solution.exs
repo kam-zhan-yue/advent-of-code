@@ -51,7 +51,7 @@ defmodule Solution do
   end
 end
 
-{:ok, main} = File.read("../inputs/03.txt")
+{:ok, main} = File.read("../inputs/03")
 
 IO.puts("===Part One===")
 Solution.solve(main, 2)

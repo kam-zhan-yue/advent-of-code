@@ -4,6 +4,6 @@ run = "gcc solution.c -o solution.o"
 [tasks.default]
 depends = ["build"]
 run = """
-./solution.o < ../inputs/05.txt
+./solution.o < ../inputs/05
 """
 

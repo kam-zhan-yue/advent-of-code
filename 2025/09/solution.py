@@ -1,4 +1,4 @@
-main_input = open('../inputs/09.txt').readlines()
+main_input = open('../inputs/09').readlines()
 
 class Point:
     x: int

@@ -6,10 +6,8 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | Year | Language |
 | - | - |
 | 2025 | [Polyglot](2025/README.md) |
-| 2024 | Rust (planned) |
-| 2023 | C++ (planned) |
-| 2022 | C# (planned) |
-| 2021 | Python (planned) |
+| 2024 | [Rust](2024/README.md) |
+| 2023 | C# (planned) |
 
 ## Installation and Setup
 
@@ -40,16 +38,16 @@ Put your inputs for each year in a $YEAR/inputs/$DAY.txt format like so:
 ```
 2025/
   inputs/
-    󰦪  01.txt
-    󰦪  02.txt
-    󰦪  03.txt
-    󰦪  04.txt
-    󰦪  05.txt
-    󰦪  06.txt
-    󰦪  07.txt
-    󰦪  08.txt
-    󰦪  09.txt
-    󰦪  10.txt
-    󰦪  11.txt
-    󰦪  12.txt
+    󰦪  01
+    󰦪  02
+    󰦪  03
+    󰦪  04
+    󰦪  05
+    󰦪  06
+    󰦪  07
+    󰦪  08
+    󰦪  09
+    󰦪  10
+    󰦪  11
+    󰦪  12
 ```
