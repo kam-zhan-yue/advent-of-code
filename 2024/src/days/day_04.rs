@@ -1,5 +1,6 @@
 pub fn solve(input: &str) {
     println!("Part One is {}", part_one(input));
+    println!("Part Two is {}", part_two(input));
 }
 
 struct Cell {
@@ -67,6 +68,32 @@ fn part_one(input: &str) -> i32 {
     sum
 }
 
+fn check_x_mas(grid: &Grid, cell: &Cell) -> i32 {
+    let top_left = cell;
+    let bottom_left = Cell { row: cell.row + 2, col: cell.col };
+    let check_top_left = check_word(grid, &top_left, "MAS", 1, 1) + check_word(grid, &top_left, "SAM", 1, 1);
+    let check_bottom_left = check_word(grid, &bottom_left, "MAS", -1, 1) + check_word(grid, &bottom_left, "SAM", -1, 1);
+    if check_top_left > 0 && check_bottom_left > 0 {
+        return 1;
+    }
+    0
+}
+
+fn part_two(input: &str) -> i32 {
+    let lines: Vec<&str> = input.lines().collect();
+    let rows = lines.len() as i32;
+    let cols = lines[0].len() as i32;
+    let grid = Grid { lines, rows, cols };
+    let mut sum = 0;
+    for i in 0..rows {
+        for j in 0..cols {
+            let cell = Cell{ row: i as i32, col: j as i32 };
+            sum += check_x_mas(&grid, &cell);
+        }
+    }
+    sum
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -85,5 +112,10 @@ MXMXAXMASX";
     #[test]
     fn test_part_one() {
         assert_eq!(part_one(INPUT), 18);
+    }
+
+    #[test]
+    fn test_part_two() {
+        assert_eq!(part_two(INPUT), 9);
     }
 }
