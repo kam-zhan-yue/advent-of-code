@@ -1,14 +1,8 @@
 use regex::Regex;
 
 pub fn solve(input: &str) {
-    let mut p1 = 0i32;
-    let mut p2 = 0i32;
-    for line in input.lines() {
-        p1 += part_one(line);
-        p2 += part_two(line);
-    }
-    println!("Part One is {}", p1);
-    println!("Part Two is {}", p2);
+    println!("Part One is {}", part_one(input));
+    println!("Part Two is {}", part_two(input));
 }
 
 fn part_one(line: &str) -> i32 {
