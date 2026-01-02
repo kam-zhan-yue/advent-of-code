@@ -72,8 +72,14 @@ fn part_one(problem: &Problem) -> i32 {
     sum
 }
 
-fn fix_line(problem: &Problem, line: &[i32]) -> Option<Vec<i32>> {
-    let mut fixed = line.to_owned();
+fn swap(line: &mut [i32], i: usize, j: usize) {
+    let temp = line[i];
+    line[i] = line[j];
+    line[j] = temp;
+}
+
+fn fix_line(problem: &Problem, line: &Vec<i32>) -> Option<Vec<i32>> {
+    let mut fixed = line.clone();
     let mut swapped = false;
     for i in 0..line.len() - 1  {
         for j in i+1..line.len() {
@@ -81,19 +87,19 @@ fn fix_line(problem: &Problem, line: &[i32]) -> Option<Vec<i32>> {
                 continue;
             }
             swapped = true;
-            fixed.swap(i, j);
+            swap(&mut fixed, i, j);
         }
     }
     if swapped {
         return Some(fixed);
     }
-    None
+    return None
 }
 
 fn part_two(problem: &Problem) -> i32 {
     let mut sum = 0;
     for line in &problem.lines {
-        if let Some(fixed) = fix_line(problem, line) {
+        if let Some(fixed) = fix_line(problem, &line) {
             sum += fixed[fixed.len()/2];
         }
     }
