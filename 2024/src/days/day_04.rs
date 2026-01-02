@@ -27,12 +27,12 @@ fn test_cell(grid: &Grid, cell: &Cell, target: char) -> bool {
 
 fn check_word(grid: &Grid, cell: &Cell, word: &str, vertical: i32, horizontal: i32) -> i32 {
     let chars: Vec<char> = word.chars().collect();
-    for i in 0..chars.len() {
+    for (i, target) in chars.iter().enumerate() {
         let next_cell = Cell{ 
             row: cell.row + vertical * (i as i32), 
             col: cell.col + horizontal * (i as i32), 
         };
-        let result = test_cell(grid, &next_cell, chars[i]);
+        let result = test_cell(grid, &next_cell, *target);
         if !result {
             return 0
         }
@@ -61,7 +61,7 @@ fn part_one(input: &str) -> i32 {
     let mut sum = 0;
     for i in 0..rows {
         for j in 0..cols {
-            let cell = Cell{ row: i as i32, col: j as i32 };
+            let cell = Cell{ row: i, col: j };
             sum += check_xmas(&grid, &cell);
         }
     }
@@ -71,7 +71,7 @@ fn part_one(input: &str) -> i32 {
 fn check_x_mas(grid: &Grid, cell: &Cell) -> i32 {
     let top_left = cell;
     let bottom_left = Cell { row: cell.row + 2, col: cell.col };
-    let check_top_left = check_word(grid, &top_left, "MAS", 1, 1) + check_word(grid, &top_left, "SAM", 1, 1);
+    let check_top_left = check_word(grid, top_left, "MAS", 1, 1) + check_word(grid, top_left, "SAM", 1, 1);
     let check_bottom_left = check_word(grid, &bottom_left, "MAS", -1, 1) + check_word(grid, &bottom_left, "SAM", -1, 1);
     if check_top_left > 0 && check_bottom_left > 0 {
         return 1;
@@ -87,7 +87,7 @@ fn part_two(input: &str) -> i32 {
     let mut sum = 0;
     for i in 0..rows {
         for j in 0..cols {
-            let cell = Cell{ row: i as i32, col: j as i32 };
+            let cell = Cell{ row: i, col: j };
             sum += check_x_mas(&grid, &cell);
         }
     }
