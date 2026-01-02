@@ -2,33 +2,50 @@
 
 My solutions to the annual Advent of Code, in whatever language I'm feeling that day.
 
-## Languages
-| Year | Language |
-| - | - |
-| 2025 | [Polyglot](2025/README.md) |
-| 2024 | [Rust](2024/README.md) |
-| 2023 | C# (planned) |
+## 2025
+| Day | Language | Difficulty | Technique |
+| - | - | - | - |
+| 01 | [Zig*](2025/01/src/main.zig) | Easy | loops |
+| 02 | [Piet*](2025/02/solution.png) | Easy | loops |
+| 03 | [Elixir*](2024/03/solution.exs) | Easy | lists, recursion |
+| 04 | Bash* [Part 1](2025/04/part-one.sh) [Part 2](2025/04/part-two.sh) | Easy | 2D arrays |
+| 05 | [C](2025/05/solution.c) | Easy | range merging |
+| 06 | [Qaz++](2025/06/solution.cpp) | Easy | 2D arrays |
+| 07 | [Go*](2025/07/solution.go) | Easy | dfs w/ cache |
+| 08 | [C++/OpenGL](2025/08/main.cpp) | Medium | union-find |
+| 09 | [Python](2025/09/solution.py) | Hard | shapes? this was fucked | 
+| 10 | [TypeScript/Node](2025/10/index.ts) | Medium | dfs, linear programming |
+| 11 | [Lua*](2025/11/solution.lua) | Easy | dfs w/ cache |
+| 12 | [Rust](2025/12/src/main.rs) | Easy | arrays |
+
+
+> [!NOTE]
+> `*` indicates either a language I had never learned before or an unusual one
+
+## 2024
+| Day | Code | Difficulty | Techniques |
+| - | - | - | - |
+| 01 | [Rust](2024/src/days/day_01.rs) | Easy | sorting, hashmap |
+| 02 | [Rust](2024/src/days/day_02.rs) | Easy | arrays |
+| 03 | [Rust](2024/src/days/day_03.rs) | Easy | regex, state machine |
+| 04 | [Rust](2024/src/days/day_04.rs) | Easy | grid, directional vectors |
+| 05 | [Rust](2024/src/days/day_05.rs) | Easy | hashmap, hashset, brute force |
 
 ## Installation and Setup
 
-Due to the nature of the multi-language setup, this project uses mise. Additionally, it uses the `expermental_monorepo_root` feature that was [added in October 2025](https://github.com/jdx/mise/discussions/6564). Please make sure you have the latest version of mise.
+[Install mise](https://mise.jdx.dev/getting-started.html)
 
-1. [Install mise](https://mise.jdx.dev/getting-started.html)
-2. Trust and install
 ```shell
 mise trust
 mise install
-```
-3. Execute a task on a specific year/day with `mise run //{year}:{day}`
-
-```shell
-mise run //2025/01
 
 # see all available tasks with
 mise tasks ls --all
-
+# run a specific year/day
+mise run //2025/01
 # to run all problems in a specific year at once (if supported)
 mise run //2025
+
 ```
 
 ## Inputs
