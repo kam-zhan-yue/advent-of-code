@@ -14,4 +14,11 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
     Game[] games = Day2.ParseInput(INPUT);
     Assert.That(Day2.PartOne(games), Is.EqualTo(8));
   }
+
+  [Test]
+  public void TestPartTwo()
+  {
+    Game[] games = Day2.ParseInput(INPUT);
+    Assert.That(Day2.PartTwo(games), Is.EqualTo(2286));
+  }
 }

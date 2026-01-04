@@ -67,8 +67,9 @@ public partial class Day2
   {
     string input = Utils.ReadFile("inputs/02");
     Game[] games = ParseInput(input);
-    Utils.PrintDay(1);
+    Utils.PrintDay(2);
     Utils.PrintPartOne(PartOne(games));
+    Utils.PrintPartTwo(PartTwo(games));
   }
 
   public static Game[] ParseInput(string input)
@@ -106,6 +107,26 @@ public partial class Day2
       if (IsGameLegal(game, bag)) {
         sum += game.ID;
       }
+    }
+    return sum;
+  }
+
+  private static int GetMinimumCubes(Game game) {
+    int red, green, blue;
+    red = green = blue = 0;
+    foreach (Set set in game.Sets) {
+      if (set.Red > red) red = set.Red;
+      if (set.Blue > blue) blue = set.Blue;
+      if (set.Green > green) green = set.Green;
+    }
+    return red * green * blue;
+  }
+
+  public static int PartTwo(Game[] games)
+  {
+    int sum = 0;
+    foreach (Game game in games) {
+      sum += GetMinimumCubes(game);
     }
     return sum;
   }

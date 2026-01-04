@@ -35,6 +35,7 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | Day | Code | Difficulty | Techniques |
 | - | - | - | - |
 | 01 | [C#](2024/Days/Day1.cs) | Easy | regex, string manipulation |
+| 02 | [C#](2024/Days/Day2.cs) | Easy | regex, arrays |
 
 ## Installation and Setup
 
