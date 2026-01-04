@@ -1,8 +1,1 @@
-**/build
-**/debug
-**/target
-**/.zig-cache
-**/zig-out
-**/.cache
-**/*.o
-**/inputs
+*.DS_Store
