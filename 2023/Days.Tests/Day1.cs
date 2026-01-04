@@ -16,7 +16,6 @@ treb7uchet";
   [Test]
   public void TestPartTwo()
   {
-    Assert.Pass();
     string INPUT = @"two1nine
 eightwothree
 abcone2threexyz
@@ -25,6 +24,10 @@ xtwone3four
 zoneight234
 7pqrstsixteen
 ";
-    Assert.That(Day1.PartTwo(INPUT), Is.EqualTo(281));
+    using (Assert.EnterMultipleScope())
+    {
+      Assert.That(Day1.PartTwo(INPUT), Is.EqualTo(281));
+      // Assert.That(Day1.PartTwo("9963onefourthree6oneightq"), Is.EqualTo(98));
+    }
   }
 }
