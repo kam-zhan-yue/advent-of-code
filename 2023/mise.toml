@@ -1,0 +1,8 @@
+[tasks.default]
+run = 'dotnet run'
+
+[tasks.watch]
+run = 'dotnet watch run'
+
+[tasks.test]
+run = 'dotnet test'
