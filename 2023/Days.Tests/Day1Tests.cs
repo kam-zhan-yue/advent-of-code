@@ -1,6 +1,6 @@
 ﻿namespace Days.Tests;
 
-public class Tests
+public class Day1Tests
 {
 
   [Test]

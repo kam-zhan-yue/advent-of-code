@@ -3,6 +3,3 @@ run = "dotnet run --project Runner/Runner.csproj"
 
 [tasks.test]
 run = "dotnet test"
-
-[tasks.watch]
-run = "dotnet watch test --project Days.Tests/Days.Tests.csproj"

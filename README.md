@@ -31,6 +31,11 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 04 | [Rust](2024/src/days/day_04.rs) | Easy | grid, directional vectors |
 | 05 | [Rust](2024/src/days/day_05.rs) | Easy | hashmap, hashset, brute force |
 
+## 2023
+| Day | Code | Difficulty | Techniques |
+| - | - | - | - |
+| 01 | [C#](2024/Days/Day1.cs) | Easy | regex, string manipulation |
+
 ## Installation and Setup
 
 [Install mise](https://mise.jdx.dev/getting-started.html)
