@@ -1,0 +1,5 @@
+[tasks.default]
+run = "cargo run"
+
+[tasks.test]
+run = "cargo test"

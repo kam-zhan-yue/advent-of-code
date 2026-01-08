@@ -36,7 +36,8 @@ public partial class Day1
 
   public static int PartTwo(string input)
   {
-    static string Duplicate(string value) {
+    static string Duplicate(string value)
+    {
       string final = value;
       final = final.Replace("one", "oneone");
       final = final.Replace("two", "twotwo");

@@ -84,8 +84,10 @@ public partial class Day2
     return games;
   }
 
-  private static bool IsGameLegal(Game game, Set bag) {
-    foreach (Set set in game.Sets) {
+  private static bool IsGameLegal(Game game, Set bag)
+  {
+    foreach (Set set in game.Sets)
+    {
       if (set.Blue > bag.Blue) return false;
       if (set.Red > bag.Red) return false;
       if (set.Green > bag.Green) return false;
@@ -103,18 +105,22 @@ public partial class Day2
     };
 
     int sum = 0;
-    foreach (Game game in games) {
-      if (IsGameLegal(game, bag)) {
+    foreach (Game game in games)
+    {
+      if (IsGameLegal(game, bag))
+      {
         sum += game.ID;
       }
     }
     return sum;
   }
 
-  private static int GetMinimumCubes(Game game) {
+  private static int GetMinimumCubes(Game game)
+  {
     int red, green, blue;
     red = green = blue = 0;
-    foreach (Set set in game.Sets) {
+    foreach (Set set in game.Sets)
+    {
       if (set.Red > red) red = set.Red;
       if (set.Blue > blue) blue = set.Blue;
       if (set.Green > green) green = set.Green;
@@ -125,7 +131,8 @@ public partial class Day2
   public static int PartTwo(Game[] games)
   {
     int sum = 0;
-    foreach (Game game in games) {
+    foreach (Game game in games)
+    {
       sum += GetMinimumCubes(game);
     }
     return sum;
