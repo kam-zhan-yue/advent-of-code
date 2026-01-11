@@ -2,67 +2,67 @@
 
 namespace Days;
 
-public readonly partial struct Game
-{
-  public Game(string line)
-  {
-    Sets = [];
-    MatchCollection matches = GameRegex().Matches(line);
-    foreach (Match match in matches)
-    {
-      if (match.Groups.Count < 3) continue;
-      ID = int.Parse(match.Groups[1].ToString());
-      string[] sets = match.Groups[2].ToString().Split(";");
-      for (int i = 0; i < sets.Length; ++i)
-      {
-        Sets.Add(new Set(sets[i]));
-      }
-    }
-  }
-
-  public int ID { get; init; }
-  public List<Set> Sets { get; init; }
-
-  [GeneratedRegex(@"Game (\d+): (.*)")]
-  private static partial Regex GameRegex();
-}
-
-public readonly partial struct Set
-{
-  public Set(string set)
-  {
-    MatchCollection matches = SetRegex().Matches(set.Trim());
-
-    foreach (Match match in matches)
-    {
-      if (match.Groups.Count < 3) continue;
-      int count = int.Parse(match.Groups[2].ToString());
-      string colour = match.Groups[3].ToString();
-      switch (colour)
-      {
-        case "blue":
-          Blue = count;
-          break;
-        case "red":
-          Red = count;
-          break;
-        case "green":
-          Green = count;
-          break;
-      }
-    }
-  }
-
-  public int Blue { get; init; }
-  public int Red { get; init; }
-  public int Green { get; init; }
-
-  [GeneratedRegex(@"((\d+) (blue|red|green))")]
-  private static partial Regex SetRegex();
-}
-
 public partial class Day2
 {
+  public readonly partial struct Game
+  {
+    public Game(string line)
+    {
+      Sets = [];
+      MatchCollection matches = GameRegex().Matches(line);
+      foreach (Match match in matches)
+      {
+        if (match.Groups.Count < 3) continue;
+        ID = int.Parse(match.Groups[1].ToString());
+        string[] sets = match.Groups[2].ToString().Split(";");
+        for (int i = 0; i < sets.Length; ++i)
+        {
+          Sets.Add(new Set(sets[i]));
+        }
+      }
+    }
+
+    public int ID { get; init; }
+    public List<Set> Sets { get; init; }
+
+    [GeneratedRegex(@"Game (\d+): (.*)")]
+    private static partial Regex GameRegex();
+  }
+
+  public readonly partial struct Set
+  {
+    public Set(string set)
+    {
+      MatchCollection matches = SetRegex().Matches(set.Trim());
+
+      foreach (Match match in matches)
+      {
+        if (match.Groups.Count < 3) continue;
+        int count = int.Parse(match.Groups[2].ToString());
+        string colour = match.Groups[3].ToString();
+        switch (colour)
+        {
+          case "blue":
+            Blue = count;
+            break;
+          case "red":
+            Red = count;
+            break;
+          case "green":
+            Green = count;
+            break;
+        }
+      }
+    }
+
+    public int Blue { get; init; }
+    public int Red { get; init; }
+    public int Green { get; init; }
+
+    [GeneratedRegex(@"((\d+) (blue|red|green))")]
+    private static partial Regex SetRegex();
+  }
+
   public static void Solve()
   {
     string input = Utils.ReadFile("inputs/02");
