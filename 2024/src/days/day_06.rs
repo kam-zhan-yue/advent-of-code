@@ -80,11 +80,10 @@ impl Grid {
     }
 
     pub fn would_loop(&mut self) -> bool {
-        if let Some(final_state) = self.last() {
-            if let Some(next) = final_state.pos.moved(final_state.dir) {
+        if let Some(final_state) = self.last()
+            && let Some(next) = final_state.pos.moved(final_state.dir) {
                 return self.obstacles.contains(&next);
             }
-        }
         false
     }
 }
