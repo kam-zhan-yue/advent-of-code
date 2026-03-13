@@ -5,18 +5,18 @@ pub struct Position {
 }
 
 impl Position {
-    pub fn moved(&self, dir: Direction) -> Position {
-        match dir {
-            Direction::Up => Position { x: self.x - 1, y: self.y },
+    pub fn moved(&self, dir: Direction) -> Option<Position> {
+        Some(match dir {
+            Direction::Up => Position { x: self.x.checked_sub(1)?, y: self.y },
             Direction::Down => Position { x: self.x + 1, y: self.y },
-            Direction::Left => Position { x: self.x, y: self.y - 1 },
+            Direction::Left => Position { x: self.x, y: self.y.checked_sub(1)? },
             Direction::Right => Position { x: self.x, y: self.y + 1 },
-        }
+        })
     }
 }
 
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub enum Direction { Left, Right, Up, Down }
 
 impl Direction {

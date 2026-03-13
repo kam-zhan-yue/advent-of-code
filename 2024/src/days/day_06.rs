@@ -6,7 +6,33 @@ use crate::utils::lib::{Position, Direction};
 
 pub fn solve(input: &str) {
     println!("Part One is {}", part_one(input));
-    // println!("Part Two is {}", part_two(&grid));
+    println!("Part Two is {}", part_two(input));
+}
+
+fn part_one(input: &str) -> i32 {
+    let g = Grid::from_string(input);
+    match g {
+        Ok(grid) => {
+            HashSet::<Position>::from_iter(once(grid.guard.pos)
+            .chain(grid.map(|step| step.pos)))
+            .len() as i32
+        },
+        Err(_) => 0
+    }
+}
+
+fn part_two(input: &str) -> i32 {
+    let g = Grid::from_string(input);
+    match g {
+        Ok(grid) => {
+            HashSet::<Position>::from_iter(once(grid.guard.pos)
+            .chain(grid.clone().map(|step| step.pos)))
+            .par_iter()
+            .filter(|obstacle| grid.with_obstacle(**obstacle).would_loop())
+            .count() as i32
+        },
+        Err(_) => 0
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -15,7 +41,7 @@ pub struct Guard {
     dir: Direction,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Grid {
     guard: Guard,
     obstacles: HashSet<Position>,
@@ -46,37 +72,43 @@ impl Grid {
             })
         }
     }
+
+    pub fn with_obstacle(&self, obstacle: Position) -> Self {
+        let mut new = self.clone();
+        new.obstacles.insert(obstacle);
+        new
+    }
+
+    pub fn would_loop(&mut self) -> bool {
+        if let Some(final_state) = self.last() {
+            if let Some(next) = final_state.pos.moved(final_state.dir) {
+                return self.obstacles.contains(&next);
+            }
+        }
+        false
+    }
 }
 
 impl Iterator for Grid {
     type Item = Guard;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let next_pos = self.guard.pos.moved(self.guard.dir);
+        let next_pos = self.guard.pos.moved(self.guard.dir)?;
         let in_bounds = self.x_max.contains(&next_pos.x) && self.y_max.contains(&next_pos.y);
         if !in_bounds {
             return None;
         }
 
         if self.obstacles.contains(&next_pos) {
+            // Loop detected!
+            if !self.collisions.insert((next_pos, self.guard.dir)) {
+                return None;
+            }
             self.guard.dir = self.guard.dir.turn();
         } else {
             self.guard.pos = next_pos;
         }
         Some(self.guard)
-    }
-}
-
-
-fn part_one(input: &str) -> i32 {
-    let g = Grid::from_string(input);
-    match g {
-        Ok(grid) => {
-            let mut positions = once(grid.guard.pos).chain(grid.map(|step| step.pos));
-            let position_map = HashSet::<Position>::from_iter(positions);
-            position_map.len() as i32
-        },
-        Err(e) => 0
     }
 }
 
@@ -102,6 +134,6 @@ mod tests {
 
     #[test]
     pub fn test_part_two() {
-        assert_eq!(part_one(INPUT), 41)
+        assert_eq!(part_two(INPUT), 6)
     }
 }
