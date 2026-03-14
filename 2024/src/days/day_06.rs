@@ -46,8 +46,8 @@ pub struct Grid {
     guard: Guard,
     obstacles: HashSet<Position>,
     collisions: HashSet<(Position, Direction)>,
-    x_max: Range<usize>,
-    y_max: Range<usize>,
+    x_max: Range<i32>,
+    y_max: Range<i32>,
 }
 
 impl Grid {
@@ -55,7 +55,7 @@ impl Grid {
         let mut map: HashMap<char, HashSet<Position>> = HashMap::new();
         for (x, line) in raw.lines().enumerate() {
             for (y, c) in line.chars().enumerate() {
-                map.entry(c).or_default().insert(Position { x, y });
+                map.entry(c).or_default().insert(Position { x: x as i32, y: y as i32 });
             }
         }
         match map.get(&'^') {
@@ -67,8 +67,8 @@ impl Grid {
                 },
                 obstacles: map[&'#'].clone(),
                 collisions: HashSet::new(),
-                x_max: 0..raw.lines().count(),
-                y_max: 0..raw.lines().last().unwrap().chars().count(),
+                x_max: 0..raw.lines().count() as i32,
+                y_max: 0..raw.lines().last().unwrap().chars().count() as i32,
             })
         }
     }
