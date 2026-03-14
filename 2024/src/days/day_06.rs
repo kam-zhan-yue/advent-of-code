@@ -80,10 +80,10 @@ impl Grid {
     }
 
     pub fn would_loop(&mut self) -> bool {
-        if let Some(final_state) = self.last()
-            && let Some(next) = final_state.pos.moved(final_state.dir) {
-                return self.obstacles.contains(&next);
-            }
+        if let Some(final_state) = self.last() {
+            let next = final_state.pos.moved(final_state.dir);
+            return self.obstacles.contains(&next)
+        }
         false
     }
 }
@@ -92,7 +92,7 @@ impl Iterator for Grid {
     type Item = Guard;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let next_pos = self.guard.pos.moved(self.guard.dir)?;
+        let next_pos = self.guard.pos.moved(self.guard.dir);
         let in_bounds = self.x_max.contains(&next_pos.x) && self.y_max.contains(&next_pos.y);
         if !in_bounds {
             return None;

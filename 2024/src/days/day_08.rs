@@ -9,12 +9,11 @@ pub fn solve(input: &str) {
 }
 
 fn part_one(input: &str) -> usize {
-    let grid = Grid::from_string(input).with_antinodes();
-    grid.antinodes.len()
+    Grid::from_string(input).with_antinodes(false).antinodes.len()
 }
 
-fn part_two(input: &str) -> i128 {
-    0
+fn part_two(input: &str) -> usize {
+    Grid::from_string(input).with_antinodes(true).antinodes.len()
 }
 
 #[derive(Debug, Clone)]
@@ -49,28 +48,31 @@ impl Grid {
         grid
     }
 
-    pub fn with_antinodes(self: &mut Grid) -> Grid {
+    pub fn with_antinodes(self: &mut Grid, infinite: bool) -> Grid {
         let mut grid = self.clone();
-        for (key, positions) in grid.map.iter() {
+        for (_, positions) in grid.map.iter() {
             for i in 0..positions.len() - 1 {
                 for j in i+1..positions.len() {
-                    let dir = Position { 
-                        x: positions[j].x - positions[i].x,
-                        y: positions[j].y - positions[i].y,
-                    };
-                    let antinode_1 = Position {
-                        x: positions[i].x - dir.x,
-                        y: positions[i].y - dir.y,
-                    };
-                    let antinode_2 = Position {
-                        x: positions[j].x + dir.x,
-                        y: positions[j].y + dir.y,
-                    };
-                    if grid.contains(antinode_1) {
-                        grid.antinodes.insert(antinode_1);
+                    let dir = positions[j].subtract(positions[i]);
+
+                    let mut multiplier = if infinite { 0 } else { 1 };
+                    while let antinode = positions[i].subtract(dir.multiply(multiplier)) 
+                        && grid.contains(antinode) {
+                        grid.antinodes.insert(antinode);
+                        multiplier += 1;
+                        if !infinite {
+                            break;
+                        }
                     }
-                    if grid.contains(antinode_2) {
-                        grid.antinodes.insert(antinode_2);
+
+                    multiplier = if infinite { 0 } else { 1 };
+                    while let antinode = positions[j].add(dir.multiply(multiplier)) 
+                        && grid.contains(antinode) {
+                        grid.antinodes.insert(antinode);
+                        multiplier += 1;
+                        if !infinite {
+                            break;
+                        }
                     }
                 }
             }
@@ -85,7 +87,7 @@ impl Grid {
 
 impl fmt::Display for Grid {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut grid = String::from("");
+        let mut grid = String::new();
         let mut reverse_map: HashMap<Position, char> = HashMap::new();
         for (key, positions) in self.map.iter() {
             for pos in positions {
@@ -94,7 +96,7 @@ impl fmt::Display for Grid {
         }
         for x in self.rows.clone() {
             for y in self.cols.clone() {
-                let pos = Position { x: x as i32, y: y as i32 };
+                let pos = Position { x, y };
                 if reverse_map.contains_key(&pos) {
                     grid.push(reverse_map[&pos]);
                 } else if self.antinodes.contains(&pos) {
@@ -134,6 +136,6 @@ mod tests {
 
     #[test]
     pub fn test_part_two() {
-        assert_eq!(part_two(INPUT), 0);
+        assert_eq!(part_two(INPUT), 34);
     }
 }
