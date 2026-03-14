@@ -31,7 +31,8 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 04 | [Rust](2024/src/days/day_04.rs) | Easy | grid, directional vectors |
 | 05 | [Rust](2024/src/days/day_05.rs) | Easy | hashmap, hashset, brute force |
 | 06 | [Rust](2024/src/days/day_06.rs) | Medium | hashmap, hashset, loop detection |
-| 07 | [Rust](2024/src/days/day_06.rs) | Easy | recursion, combinations |
+| 07 | [Rust](2024/src/days/day_07.rs) | Easy | recursion, combinations |
+| 08 | [Rust](2024/src/days/day_08.rs) | Easy | hashmap, hashset, coordinate space |
 
 ## 2023
 | Day | Code | Difficulty | Techniques |
