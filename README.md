@@ -33,6 +33,7 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 06 | [Rust](2024/src/days/day_06.rs) | Medium | hashmap, hashset, loop detection |
 | 07 | [Rust](2024/src/days/day_07.rs) | Easy | recursion, combinations |
 | 08 | [Rust](2024/src/days/day_08.rs) | Easy | hashmap, hashset, coordinate space |
+| 09 | [Rust](2024/src/days/day_09.rs) | Easy | arrays |
 
 ## 2023
 | Day | Code | Difficulty | Techniques |
