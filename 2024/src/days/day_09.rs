@@ -70,7 +70,7 @@ impl Disk {
     pub fn from_file_system(fs: FileSystem) -> Self {
         let mut memory: Vec<i32> = vec![-1; fs.size];
         for file in fs.files {
-            memory.splice(file.index..file.index+file.size, vec![file.value as i32; file.size]);
+            memory.splice(file.index..file.index+file.size, vec![file.value; file.size]);
         }
         Disk { memory }
     }
@@ -129,8 +129,8 @@ impl FileSystem {
                 } else if fs.files[i].size <= fs.spaces[j].size {
                     // There is a space that fits, so reduce that space!
                     fs.files[i].index = fs.spaces[j].index;
-                    fs.spaces[j].index = fs.spaces[j].index + fs.files[i].size;
-                    fs.spaces[j].size = fs.spaces[j].size - fs.files[i].size;
+                    fs.spaces[j].index += fs.files[i].size;
+                    fs.spaces[j].size += fs.files[i].size;
                     break
                 }
             }
