@@ -11,8 +11,8 @@ fn part_one(input: &str) -> i32 {
     get_score(&Map::from_string(input))
 }
 
-fn part_two(_input: &str) -> i32 {
-    0
+fn part_two(input: &str) -> i32 {
+    get_rating(&Map::from_string(input))
 }
 
 #[derive(Debug, Clone)]
@@ -82,6 +82,37 @@ fn get_trailhead_score(map: &Map, pos: Position, val: i32, visited: &mut HashSet
     get_trailhead_score(map, right, next, visited)
 }
 
+fn get_rating(map: &Map) -> i32 {
+    let mut score = 0i32;
+    for trailhead in map.trailheads.clone().into_iter() {
+        score += get_trailhead_rating(map, trailhead, 0);
+    }
+    score
+}
+
+fn get_trailhead_rating(map: &Map, pos: Position, val: i32) -> i32 {
+    if !map.rows.contains(&pos.x) || !map.cols.contains(&pos.y) {
+        return 0;
+    }
+    let current = map.grid[pos.x as usize][pos.y as usize];
+    if current != val {
+        return 0;
+    }
+    if current == 9 {
+        return 1;
+    }
+    let up = pos.moved(Direction::Up);
+    let down = pos.moved(Direction::Down);
+    let left = pos.moved(Direction::Left);
+    let right = pos.moved(Direction::Right);
+    let next = val + 1;
+
+    get_trailhead_rating(map, up, next) + 
+    get_trailhead_rating(map, down, next) + 
+    get_trailhead_rating(map, left, next) + 
+    get_trailhead_rating(map, right, next)
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -102,6 +133,6 @@ mod tests {
 
     #[test]
     pub fn test_part_two() {
-        assert_eq!(part_two(INPUT), 0);
+        assert_eq!(part_two(INPUT), 81);
     }
 }

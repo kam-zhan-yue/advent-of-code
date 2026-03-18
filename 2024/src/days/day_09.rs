@@ -130,7 +130,7 @@ impl FileSystem {
                     // There is a space that fits, so reduce that space!
                     fs.files[i].index = fs.spaces[j].index;
                     fs.spaces[j].index += fs.files[i].size;
-                    fs.spaces[j].size += fs.files[i].size;
+                    fs.spaces[j].size -= fs.files[i].size;
                     break
                 }
             }
