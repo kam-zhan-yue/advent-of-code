@@ -41,3 +41,7 @@ impl Direction {
         }
     }
 }
+
+pub fn ints(raw: &str) -> Vec<i32> {
+    raw.trim().split_whitespace().map(|val| val.parse().unwrap()).collect()
+}

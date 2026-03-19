@@ -24,4 +24,6 @@ fn main() {
     days::day_09::solve(&read_input("09"));
     println!("\n======Day Ten======");
     days::day_10::solve(&read_input("10"));
+    println!("\n======Day Eleven======");
+    days::day_11::solve(&read_input("11"));
 }
