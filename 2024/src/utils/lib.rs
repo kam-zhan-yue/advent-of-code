@@ -41,3 +41,10 @@ impl Direction {
         }
     }
 }
+
+pub const DIRECTIONS: [Direction; 4] = [
+    Direction::Up,
+    Direction::Down,
+    Direction::Left,
+    Direction::Right,
+];
