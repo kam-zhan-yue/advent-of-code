@@ -8,11 +8,11 @@ pub fn solve(input: &str) {
 }
 
 fn part_one(input: &str) -> i32 {
-    calculate_price(&Garden::from_string(input))
+    get_fences(&Garden::from_string(input)).into_iter().map(|fence| fence.get_price()).sum()
 }
 
-fn part_two(_input: &str) -> i32 {
-    0
+fn part_two(input: &str) -> i32 {
+    get_fences(&Garden::from_string(input)).into_iter().map(|fence| fence.get_corners() * fence.area.len() as i32).sum()
 }
 
 struct Garden {
@@ -42,16 +42,38 @@ impl Garden {
 struct Fence {
     key: char,
     perimeter: i32,
-    area: i32,
+    area: HashSet<Position>,
 }
 
 impl Fence {
     pub fn new(key: char) -> Self {
-        Fence { key, perimeter: 0, area: 0 }
+        Fence { key, perimeter: 0, area: HashSet::new() }
     }
 
     pub fn get_price(&self) -> i32 {
-        self.perimeter * self.area
+        self.perimeter * self.area.len() as i32
+    }
+
+    pub fn get_corners(&self) -> i32 {
+        let mut corners = 0i32;
+        for pos in self.area.clone() {
+            // check each position
+            for direction in DIRECTIONS {
+                // a corner occurs when the area is surrounded by two points
+                if self.area.contains(&pos.moved(direction))
+                    && self.area.contains(&pos.moved(direction.turn_clockwise()))
+                    && !self.area.contains(&pos.moved(direction).moved(direction.turn_clockwise())) {
+                    corners += 1;
+                }
+                // a corner occurs when the area has no points
+                if !self.area.contains(&pos.moved(direction))
+                    && !self.area.contains(&pos.moved(direction.turn_clockwise())) {
+                    corners += 1;
+                }
+            }
+
+        }
+        corners
     }
 }
 
@@ -77,10 +99,12 @@ fn get_fence(
     if visited.contains(&pos) { return fence.clone(); }
     visited.insert(pos);
 
+    let mut area = fence.area.clone();
+    area.insert(pos);
     let mut fence = Fence { 
         key: fence.key,
         perimeter: fence.perimeter + get_perimeter(garden, pos),
-        area: fence.area + 1,
+        area,
     };
     for direction in DIRECTIONS {
         let moved = pos.moved(direction);
@@ -101,9 +125,9 @@ fn get_fence(
     fence
 }
 
-fn calculate_price(garden: &Garden) -> i32 {
+fn get_fences(garden: &Garden) -> Vec<Fence> {
+    let mut fences = Vec::new();
     let mut visited = HashSet::new();
-    let mut price = 0i32;
     for x in garden.rows.clone() {
         for y in garden.cols.clone() {
             let fence = get_fence(
@@ -112,10 +136,12 @@ fn calculate_price(garden: &Garden) -> i32 {
                 &mut visited, 
                 &Fence::new(*garden.grid.get(&Position { x, y }).unwrap())
             );
-            price += fence.get_price();
+            if !fence.area.is_empty() {
+                fences.push(fence);
+            }
         }
     }
-    price
+    fences
 }
 
 
@@ -140,6 +166,6 @@ MMMISSJEEE";
 
     #[test]
     pub fn test_part_two() {
-        assert_eq!(part_two(INPUT), 0);
+        assert_eq!(part_two(INPUT), 1206);
     }
 }

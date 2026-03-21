@@ -40,6 +40,14 @@ impl Direction {
             Direction::Left => Direction::Up,
         }
     }
+    pub fn turn_clockwise(&self) -> Direction {
+        match self {
+            Direction::Up => Direction::Right,
+            Direction::Right => Direction::Down,
+            Direction::Down => Direction::Left,
+            Direction::Left => Direction::Up,
+        }
+    }
 }
 
 pub const DIRECTIONS: [Direction; 4] = [
