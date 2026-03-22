@@ -35,6 +35,8 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 08 | [Rust](2024/src/days/day_08.rs) | Easy | hashmap, hashset, coordinate space |
 | 09 | [Rust](2024/src/days/day_09.rs) | Easy | arrays |
 | 10 | [Rust](2024/src/days/day_10.rs) | Easy | dfs |
+| 11 | [Rust](2024/src/days/day_11.rs) | Easy | dfs, memoisation |
+| 12 | [Rust](2024/src/days/day_12.rs) | Medium | flood-fill, shapes |
 
 ## 2023
 | Day | Code | Difficulty | Techniques |
