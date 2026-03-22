@@ -44,6 +44,11 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 01 | [C#](2024/Days/Day1.cs) | Easy | regex, string manipulation |
 | 02 | [C#](2024/Days/Day2.cs) | Easy | regex, arrays |
 
+## 2022
+| Day | Code | Difficulty | Techniques |
+| - | - | - | - |
+| 01 | [Go](2022/days/day_1/main.go) | Easy | arrays, sorting |
+
 ## Installation and Setup
 
 [Install mise](https://mise.jdx.dev/getting-started.html)
