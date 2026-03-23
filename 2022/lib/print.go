@@ -11,5 +11,5 @@ func PrintPartOne(answer int) {
 }
 
 func PrintPartTwo(answer int) {
-	fmt.Printf("Part 2: %d\n", answer)
+	fmt.Printf("Part 2: %d\n\n", answer)
 }

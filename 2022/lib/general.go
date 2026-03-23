@@ -5,3 +5,7 @@ import "strings"
 func SplitLines(raw string) []string {
 	return strings.Split(raw, "\n")
 }
+
+func SplitWhitespace(raw string) [] string {
+	return strings.Split(raw, " ")
+}

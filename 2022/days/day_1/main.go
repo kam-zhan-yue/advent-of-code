@@ -27,7 +27,7 @@ func getElves(input string) []int {
 	lines := lib.SplitLines(input)
 	elves := make([]int, 0)
 	current := 0
-	for i := 0; i < len(lines); i++ {
+	for i := range lines {
 		if (lines[i] == "") {
 			elves = append(elves, current)
 			current = 0
