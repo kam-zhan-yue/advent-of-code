@@ -7,6 +7,7 @@ import (
 func Solve(input string) {
 	lib.PrintDay(2)
 	lib.PrintPartOne(partOne(input))
+	lib.PrintPartTwo(partTwo(input))
 }
 
 func partOne(input string) int {
@@ -19,7 +20,12 @@ func partOne(input string) int {
 }
 
 func partTwo(input string) int {
-	return 0
+	rounds := parse(input)
+	result := 0
+	for i := range rounds {
+		result += getPlay(rounds[i])
+	}
+	return result
 }
 
 type Round struct {
@@ -35,39 +41,48 @@ const (
 	Scissors
 )
 
+func getPlay(round Round) int {
+	switch round.you {
+		case Rock: return getValue(getLosing(round.opponent))
+		case Paper: return getValue(round.opponent) + 3
+		default: return getValue(getWinning(round.opponent)) + 6
+	}
+}
+
 func getScore(round Round) int {
 	// Draw
 	if round.opponent == round.you {
 		return getValue(round.you) + 3
 	}
 
-	if isWon(round) {
+	if round.you == getWinning(round.opponent) {
 		return getValue(round.you) + 6
 	}
 
 	return getValue(round.you)
 }
 
-func isWon(round Round) bool {
-	if round.you == Rock && round.opponent == Scissors {
-		return true
+func getWinning(hand Hand) Hand {
+	switch hand {
+		case Rock: return Paper
+		case Paper: return Scissors
+		default: return Rock
 	}
-	if round.you == Paper && round.opponent == Rock {
-		return true
-	}
-	if round.you == Scissors && round.opponent == Paper {
-		return true
-	}
-	return false
 }
 
+func getLosing(hand Hand) Hand {
+	switch hand {
+		case Rock: return Scissors
+		case Paper: return Rock
+		default: return Paper
+	}
+}
 
 func getValue(hand Hand) int {
 	switch hand {
 		case Rock: return 1
 		case Paper: return 2
-		case Scissors: return 3
-		default: return 0
+		default: return 3
 	}
 }
 
