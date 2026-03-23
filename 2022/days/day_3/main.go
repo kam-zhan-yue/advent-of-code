@@ -19,7 +19,11 @@ func partOne(input string) int {
 }
 
 func partTwo(input string) int {
-	return 0
+	result := 0
+	for _, group := range parseGroups(input) {
+		result += getMatchInGroup(group)
+	}
+	return result
 }
 
 type Compartment map[int] bool
@@ -29,12 +33,29 @@ type Rucksack struct {
 	right Compartment
 }
 
+type Group [3]Compartment
+
 func parse(input string) []Rucksack {
 	lines := make([]Rucksack, 0)
 	for _, line := range lib.SplitLines(input) {
 		lines = append(lines, parseLine(line))
 	}
 	return lines
+}
+
+func parseGroups(input string) []Group {
+	groups := make([]Group, 0)
+
+	lines := lib.SplitLines(input)
+	for i := 0; i < len(lines); i += 3 {
+		var group Group
+		group[0] = parseCompartment(lines[i])
+		group[1] = parseCompartment(lines[i+1])
+		group[2] = parseCompartment(lines[i+2])
+		groups = append(groups, group)
+	}
+
+	return groups
 }
 
 func parseLine(line string) Rucksack {
@@ -69,7 +90,17 @@ func getMatch(rucksack Rucksack) int {
 	// Return the first match between each rucksack
 	// Guaranteed to be one match between left and right
 	for key := range rucksack.left {
-		if found := rucksack.right[key]; found {
+		if rucksack.right[key] {
+			return key
+		}
+	}
+	return 0
+}
+
+func getMatchInGroup(group Group) int {
+	// Guaranteed to be one match in all groups
+	for key := range group[0] {
+		if group[1][key] && group[2][key] {
 			return key
 		}
 	}

@@ -18,5 +18,5 @@ func TestPartOne(t *testing.T) {
 }
 
 func TestPartTwo(t *testing.T) {
-	tests.AssertEq(t, partTwo(INPUT), 0)
+	tests.AssertEq(t, partTwo(INPUT), 70)
 }
