@@ -16,7 +16,7 @@ func partOne(input string) int {
 	result := 0
 	problem := parse(input)
 	for _, pair := range problem {
-		if containsRange(pair.first, pair.second) || containsRange(pair.second, pair.first) {
+		if contains(pair.first, pair.second) || contains(pair.second, pair.first) {
 			result += 1
 		}
 	}
@@ -24,7 +24,14 @@ func partOne(input string) int {
 }
 
 func partTwo(input string) int {
-	return 0
+	result := 0
+	problem := parse(input)
+	for _, pair := range problem {
+		if overlaps(pair.first, pair.second) || overlaps(pair.second, pair.first) {
+			result += 1
+		}
+	}
+	return result
 }
 
 type Range struct {
@@ -63,8 +70,13 @@ func parseRange(line string) Range {
 	return Range { start, end }
 }
 
-// Checks if b is in range a
-func containsRange(a Range, b Range) bool {
+// Checks if b is completely in a
+func contains(a Range, b Range) bool {
 	// Check that the start and end of b is in a
 	return b.start >= a.start && b.start <= a.end && b.end >= a.start && b.end <= a.end
+}
+
+// Checks if b overlaps with a
+func overlaps(a Range, b Range) bool {
+	return (b.start >= a.start && b.start <= a.end) || (b.end >= a.start && b.end <= a.end)
 }
