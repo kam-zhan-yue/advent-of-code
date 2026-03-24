@@ -13,3 +13,11 @@ func PrintPartOne(answer int) {
 func PrintPartTwo(answer int) {
 	fmt.Printf("Part 2: %d\n\n", answer)
 }
+
+func PrintPartOneStr(answer string) {
+	fmt.Printf("Part 1: %s\n", answer)
+}
+
+func PrintPartTwoStr(answer string) {
+	fmt.Printf("Part 2: %s\n\n", answer)
+}
