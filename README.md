@@ -2,6 +2,9 @@
 
 My solutions to the annual Advent of Code, in whatever language I'm feeling that day.
 
+> [!NOTE]
+> `*` indicates either a language I had never learned before or an unusual one
+
 ## 2025
 | Day | Language | Difficulty | Technique |
 | - | - | - | - |
@@ -17,10 +20,6 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 10 | [TypeScript/Node](2025/10/index.ts) | Medium | dfs, linear programming |
 | 11 | [Lua*](2025/11/solution.lua) | Easy | dfs w/ cache |
 | 12 | [Rust](2025/12/src/main.rs) | Easy | arrays |
-
-
-> [!NOTE]
-> `*` indicates either a language I had never learned before or an unusual one
 
 ## 2024
 | Day | Code | Difficulty | Techniques |
@@ -48,6 +47,10 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | Day | Code | Difficulty | Techniques |
 | - | - | - | - |
 | 01 | [Go](2022/days/day_1/main.go) | Easy | arrays, sorting |
+| 02 | [Go](2022/days/day_2/main.go) | Easy | conditions |
+| 03 | [Go](2022/days/day_3/main.go) | Easy | hashsets |
+| 04 | [Go](2022/days/day_4/main.go) | Easy | ranges |
+| 05 | [Go](2022/days/day_5/main.go) | Easy | stacks |
 
 ## Installation and Setup
 
@@ -59,16 +62,18 @@ mise install
 
 # see all available tasks with
 mise tasks ls --all
-# run a specific year/day
-mise run //2025/01
-# to run all problems in a specific year at once (if supported)
-mise run //2025
 
+# run a specific year/day (if supported)
+mise run //2025/01 
+
+# to run all problems in a specific year
+mise run //2025 
 ```
+
 
 ## Inputs
 
-Put your inputs for each year in a $YEAR/inputs/$DAY.txt format like so:
+Put your inputs for each year in a $YEAR/inputs/$DAY format like so:
 
 ```
 2025/

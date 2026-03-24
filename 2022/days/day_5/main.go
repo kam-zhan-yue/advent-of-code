@@ -105,7 +105,7 @@ func processInstruction(stacks []Stack, instruction Instruction) {
 
 func processInstruction9001(stacks []Stack, instruction Instruction) {
 	from := stacks[instruction.from]
-	popped := from[len(from) - instruction.amount:len(from)]
+	popped := from[len(from) - instruction.amount:]
 	stacks[instruction.from] = from[:len(from) - instruction.amount]
 	for _, val := range popped {
 		stacks[instruction.to] = append(stacks[instruction.to], val)
