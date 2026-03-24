@@ -15,21 +15,18 @@ func Solve(input string) {
 
 func partOne(input string) string {
 	problem := parse(input)
-	// processInstruction(problem.stacks, problem.instructions[0])
 	for _, instruction := range problem.instructions {
 		processInstruction(problem.stacks, instruction)
 	}
-	var result strings.Builder
-	for _, stack := range problem.stacks {
-		if len(stack) > 0 {
-			result.WriteString(stack[len(stack) - 1])
-		}
-	}
-	return result.String()
+	return readStacks(problem.stacks)
 }
 
-func partTwo(_input string) string {
-	return ""
+func partTwo(input string) string {
+	problem := parse(input)
+	for _, instruction := range problem.instructions {
+		processInstruction9001(problem.stacks, instruction)
+	}
+	return readStacks(problem.stacks)
 }
 
 type Problem struct {
@@ -106,7 +103,26 @@ func processInstruction(stacks []Stack, instruction Instruction) {
 	}
 }
 
+func processInstruction9001(stacks []Stack, instruction Instruction) {
+	from := stacks[instruction.from]
+	popped := from[len(from) - instruction.amount:len(from)]
+	stacks[instruction.from] = from[:len(from) - instruction.amount]
+	for _, val := range popped {
+		stacks[instruction.to] = append(stacks[instruction.to], val)
+	}
+}
+
 func pop(stack Stack) (string, Stack) {
 	val, updated := stack[len(stack)-1], stack[:len(stack)-1]
 	return val, updated
+}
+
+func readStacks(stacks []Stack) string {
+	var result strings.Builder
+	for _, stack := range stacks {
+		if len(stack) > 0 {
+			result.WriteString(stack[len(stack) - 1])
+		}
+	}
+	return result.String()
 }

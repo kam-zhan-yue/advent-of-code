@@ -19,3 +19,7 @@ move 1 from 1 to 2`
 func TestPartOne(t *testing.T) {
 	tests.AssertEqStr(t, partOne(INPUT), "CMZ")
 }
+
+func TestPartTwo(t *testing.T) {
+	tests.AssertEqStr(t, partTwo(INPUT), "MCD")
+}
