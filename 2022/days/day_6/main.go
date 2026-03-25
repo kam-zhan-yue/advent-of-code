@@ -1,7 +1,6 @@
 package day6
 
 import (
-	"fmt"
 	"kamzhanyue/aoc/lib"
 )
 
@@ -39,8 +38,33 @@ func parse(input string, start int, end int) Window {
 
 func search(window Window) int {
 	for i := 4; i < len(window.input); i++ {
-
+		if completed(window) {
+			return window.end
+		}
+		window = remove(window, window.start)
+		window = add(window, window.end)
+		window.start += 1
+		window.end += 1
 	}
-	fmt.Println(window)
 	return 0
+}
+
+func completed(window Window) bool {
+	added := 0
+	for i := range window.set {
+		if window.set[i] > 0 {
+			added += 1
+		}
+	}
+	return added >= 4
+}
+
+func remove(window Window, index int) Window {
+	window.set[rune(window.input[index])] -= 1
+	return window
+}
+
+func add(window Window, index int) Window {
+	window.set[rune(window.input[index])] += 1
+	return window
 }
