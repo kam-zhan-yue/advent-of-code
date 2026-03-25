@@ -16,7 +16,8 @@ func partOne(input string) int {
 }
 
 func partTwo(input string) int {
-	return 0
+	window := parse(input, 0, 14)
+	return search(window)
 }
 
 type Set = map[rune]int
@@ -56,7 +57,7 @@ func completed(window Window) bool {
 			added += 1
 		}
 	}
-	return added >= 4
+	return added >= (window.end - window.start)
 }
 
 func remove(window Window, index int) Window {

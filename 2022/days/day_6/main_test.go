@@ -14,5 +14,9 @@ func TestPartOne(t *testing.T) {
 }
 
 func TestPartTwo(t *testing.T) {
-	tests.AssertEq(t, partTwo(""), 0)
+	tests.AssertEq(t, partTwo("mjqjpqmgbljsphdztnvjfqwrcgsmlb"), 19)
+	tests.AssertEq(t, partTwo("bvwbjplbgvbhsrlpgdmjqwftvncz"), 23)
+	tests.AssertEq(t, partTwo("nppdvjthqldpwncqszvftbrmjlhg"), 23)
+	tests.AssertEq(t, partTwo("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"), 29)
+	tests.AssertEq(t, partTwo("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"), 26)
 }
