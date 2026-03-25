@@ -11,7 +11,7 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 01 | [Zig*](2025/01/src/main.zig) | Easy | loops |
 | 02 | [Piet*](2025/02/solution.png) | Easy | loops |
 | 03 | [Elixir*](2024/03/solution.exs) | Easy | lists, recursion |
-| 04 | Bash* [Part 1](2025/04/part-one.sh) [Part 2](2025/04/part-two.sh) | Easy | 2D arrays |
+| 04 | [Bash - Part 1](2025/04/part-one.sh) [Bash - Part 2](2025/04/part-two.sh) | Easy | 2D arrays |
 | 05 | [C](2025/05/solution.c) | Easy | range merging |
 | 06 | [Qaz++](2025/06/solution.cpp) | Easy | 2D arrays |
 | 07 | [Go*](2025/07/solution.go) | Easy | dfs w/ cache |
@@ -51,6 +51,7 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 03 | [Go](2022/days/day_3/main.go) | Easy | hashsets |
 | 04 | [Go](2022/days/day_4/main.go) | Easy | ranges |
 | 05 | [Go](2022/days/day_5/main.go) | Easy | stacks |
+| 06 | [Go](2022/days/day_6/main.go) | Easy | sliding window, hashsets |
 
 ## Installation and Setup
 
