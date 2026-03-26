@@ -8,6 +8,7 @@ import (
 	"kamzhanyue/aoc/days/day_4"
 	"kamzhanyue/aoc/days/day_5"
 	"kamzhanyue/aoc/days/day_6"
+	"kamzhanyue/aoc/days/day_7"
 )
 
 func main() {
@@ -17,5 +18,6 @@ func main() {
 	day4.Solve(lib.ReadDay("04"));
 	day5.Solve(lib.ReadDay("05"));
 	day6.Solve(lib.ReadDay("06"));
+	day7.Solve(lib.ReadDay("07"));
 }
 

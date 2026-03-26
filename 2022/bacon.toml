@@ -1,0 +1,32 @@
+default_job = "check"
+env.CARGO_TERM_COLOR = "always"
+
+[jobs.check]
+command = [
+    "go", "build",
+    "-v",
+    "./...",
+]
+need_stdout = true
+analyzer = "go"
+watch = ["."]
+
+[jobs.run]
+command = [
+    "go", "run",
+    "-v",
+    "./...",
+]
+need_stdout = true
+analyzer = "go"
+watch = ["."]
+
+[jobs.test]
+command = [
+    "go", "test",
+    "-v",
+    "./...",
+]
+need_stdout = true
+analyzer = "go"
+watch = ["."]
