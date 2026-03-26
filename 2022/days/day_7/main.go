@@ -26,7 +26,18 @@ func partOne(input string) int {
 }
 
 func partTwo(input string) int {
-	return 0
+	directory := parse(input)
+	cache := make(map[*Directory]int)
+	total_size := getSize(directory, cache)
+	unused_space := 70000000 - total_size
+	required_space := 30000000 - unused_space
+	min_size := total_size
+	for _, size := range cache {
+		if size >= required_space && size < min_size {
+			min_size = size
+		}
+	}
+	return min_size
 }
 
 type Directory struct {
