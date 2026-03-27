@@ -27,3 +27,26 @@ func Clamp(val int, min int, max int) int {
 	}
 	return val
 }
+
+type Position struct {
+	X int
+	Y int
+}
+
+type Direction int
+
+const (
+	Up Direction = iota
+	Down
+	Left
+	Right
+)
+
+func Move(pos Position, dir Direction) Position {
+	switch dir {
+		case Up: return Position { pos.X - 1, pos.Y }
+		case Down: return Position { pos.X + 1, pos.Y }
+		case Left: return Position { pos.X, pos.Y - 1 }
+		default: return Position { pos.X, pos.Y + 1 }
+	}
+}
