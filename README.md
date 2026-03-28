@@ -53,6 +53,7 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 05 | [Go](2022/days/day_5/main.go) | Easy | stacks |
 | 06 | [Go](2022/days/day_6/main.go) | Easy | sliding window, hashsets |
 | 07 | [Go](2022/days/day_7/main.go) | Medium | trees, dfs, memoisation |
+| 08 | [Go](2022/days/day_8/main.go) | Medium | grid, hashsets, recursion |
 
 ## Installation and Setup
 

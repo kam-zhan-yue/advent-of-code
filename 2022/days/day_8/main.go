@@ -29,17 +29,14 @@ func partOne(input string) int {
 
 func partTwo(input string) int {
 	forest := parse(input)
-	visible := getVisible(forest)
-
-	return getScore(forest, Position { X: 3, Y: 2 }, visible)
-	// result := 0
-	// for row := range forest.rows {
-	// 	for col := range forest.cols {
-	// 		pos := Position { X: row, Y: col }
-	// 		result = max(getScore(forest, pos, visible), result)
-	// 	}
-	// }
-	// return result
+	result := 0
+	for row := range forest.rows {
+		for col := range forest.cols {
+			pos := Position { X: row, Y: col }
+			result = max(getScore(forest, pos), result)
+		}
+	}
+	return result
 }
 
 type Direction = lib.Direction
@@ -57,13 +54,6 @@ type Visible struct {
 	right Grid
 }
 
-type Vision = map[int]Grid
-type FOV struct {
-	up Vision
-	down Vision
-	left Vision
-	right Vision
-}
 
 func parse(input string) Forest {
 	grid := make(Grid)
@@ -149,12 +139,21 @@ func isVisible(forest Forest, pos Position, visible Visible) bool {
 		height > visible.right[pos]
 }
 
-func getScore(forest Forest, pos Position, visible Visible) int {
-	// How many tres can it see on the left?
-	// height := forest.trees[pos]
-	// fmt.Println("TREES")
-	// printGrid(forest.trees, forest.rows, forest.cols)
-	// fmt.Println("LEFT")
-	// printGrid(visible.left, forest.rows, forest.cols)
-	return 0
+func look(forest Forest, height int, pos Position, dir Direction) int {
+	// We are out of bounds
+	if pos.X < 0 || pos.Y < 0 || pos.X >= forest.rows || pos.Y >= forest.cols {
+		return 0
+	}
+	// We hit a tree that is taller or same height
+	if height <= forest.trees[pos] {
+		return 1
+	}
+	return 1 + look(forest, height, lib.Move(pos, dir), dir)
+}
+
+func getScore(forest Forest, pos Position) int {
+	return look(forest, forest.trees[pos], lib.Move(pos, lib.Up), lib.Up) *
+				 look(forest, forest.trees[pos], lib.Move(pos, lib.Down), lib.Down) *
+				 look(forest, forest.trees[pos], lib.Move(pos, lib.Left), lib.Left) *
+				 look(forest, forest.trees[pos], lib.Move(pos, lib.Right), lib.Right)
 }
