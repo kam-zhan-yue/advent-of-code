@@ -76,3 +76,7 @@ func Subtract(a Position, b Position) Position {
 func Length(a Position) float64 {
 	return math.Sqrt(float64(a.X * a.X + a.Y * a.Y))
 }
+
+func Delete(a []int, i int) []int {
+	return append(a[:i], a[i+1:]...)
+}
