@@ -9,18 +9,35 @@ import (
 )
 
 func Solve(input string) {
-
 	lib.PrintDay(11)
 	lib.PrintPartOne(partOne(input))
+	lib.PrintPartTwo(partTwo(input))
 }
 
 func partOne(input string) int {
 	monkeys := parse(input)
 	i := 0
 	for i < 20 {
-		monkeys = playRound(monkeys)
+		monkeys = playRound(monkeys, 0)
 		i += 1
 	}
+	sortMonkeys(monkeys)
+	return monkeys[0].inspections * monkeys[1].inspections
+}
+
+func partTwo(input string) int {
+	monkeys := parse(input)
+	i := 0
+	divisor := calculateDivisor(monkeys)
+	for i < 10000 {
+		monkeys = playRound(monkeys, divisor)
+		i += 1
+	}
+	sortMonkeys(monkeys)
+	return monkeys[0].inspections * monkeys[1].inspections
+}
+
+func sortMonkeys(monkeys []Monkey) {
 	slices.SortFunc(monkeys, func(a, b Monkey) int {
 		if a.inspections > b.inspections {
 			return -1
@@ -30,7 +47,6 @@ func partOne(input string) int {
 			return 1
 		}
 	})
-	return monkeys[0].inspections * monkeys[1].inspections
 }
 
 type Operation struct {
@@ -86,37 +102,39 @@ func parse(input string) []Monkey {
 	return monkeys
 }
 
-func playRound(monkeys []Monkey) []Monkey {
+func calculateDivisor(monkeys []Monkey) int {
+	divisor := 1
+	for _, monkey := range monkeys {
+		divisor *= monkey.test.modulo
+	}
+	return divisor
+}
+
+func playRound(monkeys []Monkey, divisor int) []Monkey {
 	for i, monkey := range monkeys {
 		// fmt.Println("Monkey", monkey.id)
 		for _, item := range monkey.items {
-			// fmt.Println(" Monkey inspects an item with a worry level of", item)
 			monkeys[i].inspections += 1
 
 			switch monkey.operation.op {
 				case operations.Multiply:
 					item *= monkey.operation.val
-					// fmt.Println("  Worry level is multiplied by", monkey.operation.val, "to", item)
 				case operations.Subtract:
 					item -= monkey.operation.val
-					// fmt.Println("  Worry level is decreased by", monkey.operation.val, "to", item)
 				case operations.Square:
 					item *= item
-					// fmt.Println("  Worry level is squared by", monkey.operation.val, "to", item)
 				case operations.Add:
 					item += monkey.operation.val
-					// fmt.Println("  Worry level is increased by", monkey.operation.val, "to", item)
 			}
 
-			item /= 3
-			// fmt.Println("  Monkey gets bored with item. Worry level is divided by 3 to", item)
-			if item % monkey.test.modulo == 0{
-				// fmt.Println("  Current worry level is divisible by", monkey.test.modulo)
-				// fmt.Println("  Item with worry level", item, "is thrown to monkey", monkey.test.true)
+			if divisor == 0 {
+				item /= 3
+			} else {
+				item %= divisor
+			}
+			if item % monkey.test.modulo == 0 {
 				monkeys[monkey.test.true].items = append(monkeys[monkey.test.true].items, item)
 			} else {
-				// fmt.Println("  Current worry level is not divisible by", monkey.test.modulo)
-				// fmt.Println("  Item with worry level", item, "is thrown to monkey", monkey.test.false)
 				monkeys[monkey.test.false].items = append(monkeys[monkey.test.false].items, item)
 			}
 		}

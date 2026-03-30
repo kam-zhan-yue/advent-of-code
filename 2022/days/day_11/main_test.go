@@ -38,3 +38,7 @@ Monkey 3:
 func TestPartOne(t *testing.T) {
 	tests.AssertEq(t, partOne(INPUT), 10605)
 }
+
+func TestPartTwo(t *testing.T) {
+	tests.AssertEq(t, partTwo(INPUT), 2713310158)
+}
