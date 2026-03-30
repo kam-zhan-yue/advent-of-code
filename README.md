@@ -54,7 +54,8 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 06 | [Go](2022/days/day_6/main.go) | Easy | sliding window, hashsets |
 | 07 | [Go](2022/days/day_7/main.go) | Medium | trees, dfs, memoisation |
 | 08 | [Go](2022/days/day_8/main.go) | Medium | grid, hashsets, recursion |
-| 09 | [Go](2022/days/day_8/main.go) | Easy | linked lists, hashsets |
+| 09 | [Go](2022/days/day_9/main.go) | Easy | linked lists, hashsets |
+| 10 | [Go](2022/days/day_10/main.go) | Easy | arrays |
 
 ## Installation and Setup
 
