@@ -56,6 +56,7 @@ My solutions to the annual Advent of Code, in whatever language I'm feeling that
 | 08 | [Go](2022/days/day_8/main.go) | Medium | grid, hashsets, recursion |
 | 09 | [Go](2022/days/day_9/main.go) | Easy | linked lists, hashsets |
 | 10 | [Go](2022/days/day_10/main.go) | Easy | arrays |
+| 11 | [Go](2022/days/day_10/main.go) | Medium | chinese remainder theorem |
 
 ## Installation and Setup
 
