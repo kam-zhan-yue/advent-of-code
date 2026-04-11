@@ -15,11 +15,34 @@ func Solve(input string) {
 
 func partOne(input string) int {
 	mountain := parse(input)
-	return dijkstra(mountain)
+
+	return dijkstra(
+		mountain, 
+		mountain.start,
+		func(mountain Mountain, pos Position) bool {
+			return pos == mountain.end
+		},
+		func(mountain Mountain, curr Position, next Position) bool {
+			currentChar := mountain.grid[curr.X][curr.Y]
+			nextChar := mountain.grid[next.X][next.Y]
+			return nextChar <= currentChar + 1
+		})
 }
 
 func partTwo(input string) int {
-	return 0
+	mountain := parse(input)
+
+	return dijkstra(
+		mountain, 
+		mountain.end,
+		func(mountain Mountain, pos Position) bool {
+			return mountain.grid[pos.X][pos.Y] == mountain.grid[mountain.start.X][mountain.start.Y]
+		},
+		func(mountain Mountain, curr Position, next Position) bool {
+			currentChar := mountain.grid[curr.X][curr.Y]
+			nextChar := mountain.grid[next.X][next.Y]
+			return currentChar <= nextChar + 1
+		})
 }
 
 type Position = lib.Position
@@ -100,7 +123,12 @@ func parse(input string) Mountain {
 	return mountain
 }
 
-func dijkstra(mountain Mountain) int {
+func dijkstra(
+	mountain Mountain, 
+	start Position, 
+	isFinished func(mountain Mountain, pos Position) bool,
+	isReachable func(mountain Mountain, curr Position, next Position) bool,
+) int {
 	queue := make(PriorityQueue, 0)
 	posToNode := make(map[Position]*Node)
 	nodeToPos := make(map[*Node]Position)
@@ -110,7 +138,7 @@ func dijkstra(mountain Mountain) int {
 			pos := Position { X: row, Y: col }
 			posToNode[pos] = &node
 			nodeToPos[&node] = pos
-			if pos == mountain.start {
+			if pos == start {
 				node.dist = 0
 			} else {
 				node.dist = math.MaxInt
@@ -124,7 +152,6 @@ func dijkstra(mountain Mountain) int {
 		// 1. Pop out the current node. The initial node is the starting node
 		item := heap.Pop(&queue).(*Node)
 		pos := nodeToPos[item]
-		char := mountain.grid[pos.X][pos.Y]
 		// 2. Get all the neighbouring nodes and update their positions
 		for _, dir := range lib.AllDirections {
 			moved := pos.Move(dir)
@@ -132,14 +159,14 @@ func dijkstra(mountain Mountain) int {
 			if !lib.InRange(moved.X, 0, len(mountain.grid) - 1) { continue }
 			if !lib.InRange(moved.Y, 0, len(mountain.grid[0]) - 1) { continue }
 			// Check if the position is reachable
-			if mountain.grid[moved.X][moved.Y] <= char + 1 {
-				if moved == mountain.end {
-					return item.dist + 1
-				}
-				// Get the node at the moved position and update its position
+			if isReachable(mountain, pos, moved) {
+				// Get the node at the moved position and update its distance in the queue
 				node := posToNode[moved]
-				// Update the priority queue
-				queue.update(node, min(node.dist, item.dist + 1))
+				updated := min(node.dist, item.dist + 1)
+				if isFinished(mountain, moved) {
+					return updated
+				}
+				queue.update(node, updated)
 			}
 		}
 	}

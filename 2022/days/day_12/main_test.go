@@ -15,3 +15,7 @@ abdefghi`
 func TestPartOne(t *testing.T) {
 	tests.AssertEq(t, partOne(INPUT), 31)
 }
+
+func TestPartTwo(t *testing.T) {
+	tests.AssertEq(t, partTwo(INPUT), 29)
+}
