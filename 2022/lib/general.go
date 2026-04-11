@@ -47,6 +47,15 @@ type Position struct {
 	Y int
 }
 
+func (pos Position) Move(dir Direction) Position {
+	switch dir {
+		case Up: return Position { pos.X - 1, pos.Y }
+		case Down: return Position { pos.X + 1, pos.Y }
+		case Left: return Position { pos.X, pos.Y - 1 }
+		default: return Position { pos.X, pos.Y + 1 }
+	}
+}
+
 type Direction int
 
 const (
@@ -55,6 +64,8 @@ const (
 	Left
 	Right
 )
+
+var AllDirections = []Direction{Up, Down, Left, Right}
 
 func Move(pos Position, dir Direction) Position {
 	switch dir {
@@ -79,4 +90,8 @@ func Length(a Position) float64 {
 
 func Delete(a []int, i int) []int {
 	return append(a[:i], a[i+1:]...)
+}
+
+func InRange(i, min, max int) bool {
+	return i >= min && i <= max
 }
